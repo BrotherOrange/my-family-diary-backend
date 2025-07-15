@@ -1,0 +1,42 @@
+name: CI and Deploy to Jenkins
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Upload artifact to Jenkins
+        id: upload-artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: spring-boot-app.jar
+          path: target/*.jar
+
+      - name: Trigger Jenkins Job
+        uses: appleboy/jenkins-action@master
+        with:
+          url: http://1.14.202.237:8554/
+          user: root
+          token: ${{ secrets.JENKINS_TOKEN }}
+          job: my-family-diray-backend
+          params: ARTIFACT_NAME=spring-boot-app.jar
+
+
+
