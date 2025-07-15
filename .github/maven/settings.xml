@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+          <!-- 镜像仓库配置 -->
+  <mirrors>
+    <!-- 阿里云中央仓库镜像（推荐，覆盖中央仓库） -->
+    <mirror>
+      <id>aliyun-central</id>
+      <mirrorOf>central</mirrorOf> <!-- 仅代理中央仓库 -->
+      <url>https://maven.aliyun.com/repository/central</url>
+    </mirror>
+    
+    <!-- 腾讯云仓库（可选，作为补充） -->
+    <mirror>
+      <id>tencent-maven</id>
+      <mirrorOf>tencent</mirrorOf> <!-- 仅代理腾讯云相关仓库 -->
+      <url>https://mirrors.tencent.com/nexus/repository/maven-public/</url>
+    </mirror>
+  </mirrors>
+
+</settings>

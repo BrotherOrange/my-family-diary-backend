@@ -10,3 +10,22 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+
+logging:
+  level:
+    com.qcloud.cos.http.DefaultCosHttpClient: WARN
+
+wechat:
+  app-id: ${WECHAT_APP_ID}
+  app-secret: ${WECHAT_APP_SECRET}
+  code-to-session-url: https://api.weixin.qq.com/sns/jscode2session
+
+tencent-cloud:
+  app-id: 1259817492
+  api-secret-id: ${TENCENT_CLOUD_API_SECRET_ID}
+  api-secret-key: ${TENCENT_CLOUD_API_SECRET_KEY}
+  cos:
+    bucket: zhang-jihao-com-1259817492
+    region: ap-guangzhou
+    host: cos.zhang-jihao.com
+    default-host: zhang-jihao-com-1259817492.cos.ap-guangzhou.myqcloud.com
