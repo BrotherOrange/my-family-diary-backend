@@ -54,4 +54,4 @@ jobs:
           user: root
           token: ${{ secrets.JENKINS_TOKEN }}
           job: my-family-diray-backend
-          parameters: '{ "ARTIFACT_NAME": "spring-boot-app.jar" }'
+          parameters: '{ "parameter": [ { "name": "ARTIFACT_NAME", "value": "spring-boot-app.jar" } ] }'
