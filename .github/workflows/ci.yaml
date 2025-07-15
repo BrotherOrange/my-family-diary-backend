@@ -50,8 +50,8 @@ jobs:
       - name: Trigger Jenkins Job
         uses: appleboy/jenkins-action@master
         with:
-          url: http://1.14.202.237:8087/
+          url: http://1.14.202.237:8087
           user: root
           token: ${{ secrets.JENKINS_TOKEN }}
-          job: my-family-diray-backend
+          job: my-family-diary-backend
           parameters: '{ "parameter": [ { "name": "ARTIFACT_NAME", "value": "spring-boot-app.jar" } ] }'
