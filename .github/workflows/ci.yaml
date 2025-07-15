@@ -47,11 +47,9 @@ jobs:
           name: spring-boot-app.jar
           path: target/*.jar
 
-      - name: Trigger Jenkins Job
-        uses: appleboy/jenkins-action@master
-        with:
-          url: http://1.14.202.237:8087
-          user: root
-          token: ${{ secrets.JENKINS_TOKEN }}
-          job: my-family-diary-backend
-          parameters: '{ "parameter": [ { "name": "ARTIFACT_NAME", "value": "spring-boot-app.jar" } ] }'
+      - name: Trigger Jenkins Job with curl
+        run: |
+          curl --location --request POST 'http://1.14.202.237:8087/job/my-family-diary-backend/build' \
+            --header 'Authorization: Basic ${{ secrets.JENKINS_BASIC_AUTH }}' \
+            --header 'Content-Type: application/x-www-form-urlencoded' \
+            --data-urlencode 'json={"parameter":[{"name":"ARTIFACT_NAME","value":"spring-boot-app.jar"}]}'
