@@ -22,14 +22,15 @@ jobs:
       - name: Build with Maven
         run: |
           mvn clean package -DskipTests -Pserver \
-            --settings .github/maven/settings.xml \
-            -DDB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -DDB_URL=${{ secrets.DB_URL }} \
-            -DDB_USERNAME=${{ secrets.DB_USERNAME }} \
-            -DTENCENT_CLOUD_API_SECRET_ID=${{ secrets.TENCENT_CLOUD_API_SECRET_ID }} \
-            -DTENCENT_CLOUD_API_SECRET_KEY=${{ secrets.TENCENT_CLOUD_API_SECRET_KEY }} \
-            -DWECHAT_APP_ID=${{ secrets.WECHAT_APP_ID }} \
-            -DWECHAT_APP_SECRET=${{ secrets.WECHAT_APP_SECRET }}
+            --settings .github/maven/settings.xml
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          TENCENT_CLOUD_API_SECRET_ID: ${{ secrets.TENCENT_CLOUD_API_SECRET_ID }}
+          TENCENT_CLOUD_API_SECRET_KEY: ${{ secrets.TENCENT_CLOUD_API_SECRET_KEY }}
+          WECHAT_APP_ID: ${{ secrets.WECHAT_APP_ID }}
+          WECHAT_APP_SECRET: ${{ secrets.WECHAT_APP_SECRET }}
 
       - name: Upload artifact to Jenkins
         id: upload-artifact
@@ -46,6 +47,3 @@ jobs:
           token: ${{ secrets.JENKINS_TOKEN }}
           job: my-family-diray-backend
           params: ARTIFACT_NAME=spring-boot-app.jar
-
-
-
