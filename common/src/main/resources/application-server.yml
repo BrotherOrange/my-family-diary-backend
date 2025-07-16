@@ -1,6 +1,8 @@
 server:
   port: 8003
   address: 0.0.0.0
+  servlet:
+    context-path: /family/diary/api
 
 spring:
   application:
