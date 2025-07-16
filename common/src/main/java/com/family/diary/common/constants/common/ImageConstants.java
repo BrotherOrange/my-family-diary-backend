@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.family.diary.common.config.common;
+package com.family.diary.common.constants.common;
 
 public interface ImageConstants {
     String  IMAGE_PREFIX      = "image/";

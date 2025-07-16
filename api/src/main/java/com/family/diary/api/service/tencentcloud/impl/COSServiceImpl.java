@@ -17,7 +17,7 @@ package com.family.diary.api.service.tencentcloud.impl;
 
 import com.family.diary.api.dto.request.tencentcloud.cos.COSAvatarUploadRequest;
 import com.family.diary.api.service.tencentcloud.COSService;
-import com.family.diary.common.config.common.ImageConstants;
+import com.family.diary.common.constants.common.ImageConstants;
 import com.family.diary.common.constants.tencentcloud.COSConstants;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.ImageUtils;
