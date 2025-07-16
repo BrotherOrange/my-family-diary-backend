@@ -31,12 +31,12 @@ jobs:
         run: |
           mvn clean package -DskipTests \
             --settings .github/maven/settings.xml \
-            -DDB_PASSWORD="${{ secrets.DB_PASSWORD }}"
-            -DDB_URL="${{ secrets.DB_URL }}"
-            -DDB_USERNAME="${{ secrets.DB_USERNAME }}"
-            -DTENCENT_CLOUD_API_SECRET_ID="${{ secrets.TENCENT_CLOUD_API_SECRET_ID }}"
-            -DTENCENT_CLOUD_API_SECRET_KEY="${{ secrets.TENCENT_CLOUD_API_SECRET_KEY }}"
-            -DWECHAT_APP_ID="${{ secrets.WECHAT_APP_ID }}"
+            -DDB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            -DDB_URL="${{ secrets.DB_URL }}" \
+            -DDB_USERNAME="${{ secrets.DB_USERNAME }}" \
+            -DTENCENT_CLOUD_API_SECRET_ID="${{ secrets.TENCENT_CLOUD_API_SECRET_ID }}" \
+            -DTENCENT_CLOUD_API_SECRET_KEY="${{ secrets.TENCENT_CLOUD_API_SECRET_KEY }}" \
+            -DWECHAT_APP_ID="${{ secrets.WECHAT_APP_ID }}" \
             -DWECHAT_APP_SECRET="${{ secrets.WECHAT_APP_SECRET }}"
 
       - name: Check api/target directory
