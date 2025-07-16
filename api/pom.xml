@@ -40,6 +40,10 @@
             </resource>
             <resource>
                 <directory>../common/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/application*.yml</include>
+                </includes>
             </resource>
         </resources>
         <plugins>
