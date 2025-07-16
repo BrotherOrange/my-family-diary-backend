@@ -37,7 +37,6 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>true</filtering>
             </resource>
             <resource>
                 <directory>../common/src/main/resources</directory>
