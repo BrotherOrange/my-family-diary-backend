@@ -40,12 +40,16 @@ jobs:
           WECHAT_APP_ID: ${{ secrets.WECHAT_APP_ID }}
           WECHAT_APP_SECRET: ${{ secrets.WECHAT_APP_SECRET }}
 
+      - name: Check api/target directory
+        run: |
+          ls -la api/target/
+
       - name: Upload artifact to Jenkins
-        id: upload-artifact
         uses: actions/upload-artifact@v4
         with:
           name: spring-boot-app.jar
-          path: target/*.jar
+          path: api/target/*.jar
+          if-no-files-found: error
 
       - name: Trigger Jenkins Job with curl
         run: |
