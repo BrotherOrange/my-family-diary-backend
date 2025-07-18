@@ -78,7 +78,6 @@ public class COSConfig {
      *
      * @return COSClient
      */
-    @Bean(name = "cosClientWithTempInfo")
     public COSClient cosClientWithTempInfo() {
         COSTempInfo cosTempInfo = getCosTempInfo();
         COSCredentials cred = new BasicSessionCredentials(cosTempInfo.cosTempSecretId(), cosTempInfo.cosTempSecretKey(),

@@ -17,6 +17,7 @@ package com.family.diary.api.service.tencentcloud.impl;
 
 import com.family.diary.api.dto.request.tencentcloud.cos.COSAvatarUploadRequest;
 import com.family.diary.api.service.tencentcloud.COSService;
+import com.family.diary.common.config.tencentcloud.COSConfig;
 import com.family.diary.common.constants.common.ImageConstants;
 import com.family.diary.common.constants.tencentcloud.COSConstants;
 import com.family.diary.common.exceptions.BaseException;
@@ -39,6 +40,9 @@ public class COSServiceImpl implements COSService {
     private COSUtil cosUtil;
 
     @Resource
+    private COSConfig cosConfig;
+
+    @Resource
     private ImageUtils imageUtils;
 
     @Value("${tencent-cloud.cos.bucket}")
@@ -46,6 +50,7 @@ public class COSServiceImpl implements COSService {
 
     @Override
     public String uploadAvatarToCOS(COSAvatarUploadRequest request) throws BaseException {
+        cosClientWithTempInfo = cosConfig.cosClientWithTempInfo();
         String openid = request.getOpenId();
         String base64Image = request.getBase64Image();
         String fileFormat = imageUtils.getContentTypeFromBase64(base64Image).replace(ImageConstants.IMAGE_PREFIX, Strings.EMPTY);

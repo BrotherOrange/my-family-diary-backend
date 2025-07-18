@@ -27,7 +27,7 @@ tencent-cloud:
   api-secret-id: ${TENCENT_CLOUD_API_SECRET_ID}
   api-secret-key: ${TENCENT_CLOUD_API_SECRET_KEY}
   cos:
-    bucket: zhang-jihao-com-1259817492
+    bucket: jihao-family-1259817492
     region: ap-guangzhou
-    host: cos.zhang-jihao.com
-    default-host: zhang-jihao-com-1259817492.cos.ap-guangzhou.myqcloud.com
+    host: cos.jihao-family.com
+    default-host: jihao-family-1259817492.cos.ap-guangzhou.myqcloud.com
