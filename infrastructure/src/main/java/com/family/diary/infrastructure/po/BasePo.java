@@ -13,11 +13,10 @@
  * limitations under the License.
  */
 
-package com.family.diary.domain.entity.user;
+package com.family.diary.infrastructure.po;
 
-import com.family.diary.common.enums.status.UserEmotionStatus;
-import com.family.diary.domain.entity.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,52 +26,26 @@ import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
-/**
- * 用户实体
- *
- * @author Richard Zhang
- * @since 2025-07-15
- */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class UserEntity extends BaseEntity {
+@EqualsAndHashCode
+public abstract class BasePo {
     /**
-     * 微信账户OpenID
+     * 主键ID
      */
-    private String openId;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
-     * 用户名
+     * 创建时间
      */
-    private String username;
+    private LocalDateTime createdAt;
 
     /**
-     * 密码
+     * 更新时间
      */
-    private String password;
-
-    /**
-     * 生日
-     */
-    private LocalDateTime birthday;
-
-    /**
-     * 手机号
-     */
-    private String phone;
-
-    /**
-     * 个人简介
-     */
-    private String description;
-
-    /**
-     * 情绪状态
-     */
-    private UserEmotionStatus status;
+    private LocalDateTime updatedAt;
 }

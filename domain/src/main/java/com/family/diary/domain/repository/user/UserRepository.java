@@ -13,38 +13,29 @@
  * limitations under the License.
  */
 
-package com.family.diary.domain.entity.base;
+package com.family.diary.domain.repository.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
-
-import java.time.LocalDateTime;
+import com.family.diary.domain.entity.user.UserEntity;
 
 /**
- * Base实体
+ * UserRepository接口类
  *
  * @author Richard Zhang
- * @since 2025-07-15
+ * @since 2025-07-19
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Accessors(chain = true)
-public abstract class BaseEntity {
+public interface UserRepository {
     /**
-     * 实体ID
+     * 保存新用户
      */
-    private Long id;
+    void save(UserEntity user);
 
     /**
-     * 创建时间
+     * 通过用户ID查询用户
      */
-    private LocalDateTime createdAt;
+    UserEntity findById(Long id);
 
     /**
-     * 更新时间
+     * 通过OpenID查询用户
      */
-    private LocalDateTime updatedAt;
+    UserEntity findByOpenId(String openId);
 }
