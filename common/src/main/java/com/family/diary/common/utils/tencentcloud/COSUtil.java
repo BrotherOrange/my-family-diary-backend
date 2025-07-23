@@ -55,7 +55,7 @@ public class COSUtil {
                                                   long expirationInSeconds) {
         try {
             // 设置签名URL有效时间
-            Date expiration = new Date(System.currentTimeMillis() + expirationInSeconds * 1000); // 24小时后失效
+            Date expiration = new Date(System.currentTimeMillis() + expirationInSeconds * 1000);
 
             // 生成预签名URL请求
             GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucketName, objectKey);

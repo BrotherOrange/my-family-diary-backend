@@ -13,27 +13,12 @@
  * limitations under the License.
  */
 
-package com.family.diary.common.constants.tencentcloud;
+package com.family.diary.infrastructure.dao.user;
 
-/**
- * COS对象存储服务常量类
- *
- * @author Richard Zhang
- * @since 2025-07-15
- */
-public interface COSConstants {
-    /**
-     * 临时密钥过期时间，单位为秒
-     */
-    Integer TEMP_TOKEN_EXPIRE_TIME = 7200;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.family.diary.infrastructure.po.user.UserPo;
+import org.apache.ibatis.annotations.Mapper;
 
-    /**
-     * 头像存储路径
-     */
-    String AVATARS_DIR = "images/user/avatars";
-
-    /**
-     * 头像缓存前缀
-     */
-    String AVATARS_CACHE_KEY_PREFIX = "avatar:url";
+@Mapper
+public interface UserDAO extends BaseMapper<UserPo> {
 }

@@ -13,27 +13,41 @@
  * limitations under the License.
  */
 
-package com.family.diary.common.constants.tencentcloud;
+package com.family.diary.common.models.redis;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
 
 /**
- * COS对象存储服务常量类
+ * Redis Lettuce连接池属性值
  *
  * @author Richard Zhang
- * @since 2025-07-15
+ * @since 2025-07-23
  */
-public interface COSConstants {
+@Data
+@Configuration
+@ConfigurationProperties(prefix = "spring.data.redis.lettuce.pool")
+public class PoolProperties {
     /**
-     * 临时密钥过期时间，单位为秒
+     * 是否启用连接池
      */
-    Integer TEMP_TOKEN_EXPIRE_TIME = 7200;
+    private boolean enabled;
 
     /**
-     * 头像存储路径
+     * 最大空闲连接数
      */
-    String AVATARS_DIR = "images/user/avatars";
+    private int maxIdle;
 
     /**
-     * 头像缓存前缀
+     * 最小空闲连接数
      */
-    String AVATARS_CACHE_KEY_PREFIX = "avatar:url";
+    private int minIdle;
+
+    /**
+     * 获取最大等待时间
+     */
+    private Duration maxWait;
 }
