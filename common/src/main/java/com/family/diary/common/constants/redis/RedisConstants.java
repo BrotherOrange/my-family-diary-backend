@@ -13,27 +13,20 @@
  * limitations under the License.
  */
 
-package com.family.diary.common.constants.tencentcloud;
+package com.family.diary.common.constants.redis;
 
-/**
- * COS对象存储服务常量类
- *
- * @author Richard Zhang
- * @since 2025-07-15
- */
-public interface COSConstants {
+public interface RedisConstants {
     /**
-     * 临时密钥过期时间，单位为秒
+     * Redis Lettuce客户端名称
      */
-    Integer TEMP_TOKEN_EXPIRE_TIME = 7200;
+    String REDIS_CLIENT_NAME = "my-family-diary-redis-client";
+    /**
+     * Redis锁Lya脚本名称
+     */
+    String REDIS_RELEASE_LOCK_LUA_NAME = "release_lock";
 
     /**
-     * 头像存储路径
+     * Redis锁Lya脚本Resource路径
      */
-    String AVATARS_DIR = "images/user/avatars";
-
-    /**
-     * 头像缓存前缀
-     */
-    String AVATARS_CACHE_KEY_PREFIX = "avatar:url";
+    String REDIS_RELEASE_LOCK_LUA_PATH = "scripts/redis/release_lock.lua";
 }

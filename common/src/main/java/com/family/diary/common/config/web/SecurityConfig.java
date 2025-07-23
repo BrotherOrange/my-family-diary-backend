@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.family.diary.api.config;
+package com.family.diary.common.config.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +31,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    /**
+     * 定义一个SecurityFilterChain Bean，用于配置HTTP安全性
+     *
+     * @param http HttpSecurity对象
+     * @return SecurityFilterChain对象
+     * @throws Exception 如果配置过程中发生错误
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(

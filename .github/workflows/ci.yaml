@@ -38,6 +38,11 @@ jobs:
             -DTENCENT_CLOUD_API_SECRET_KEY="${{ secrets.TENCENT_CLOUD_API_SECRET_KEY }}" \
             -DWECHAT_APP_ID="${{ secrets.WECHAT_APP_ID }}" \
             -DWECHAT_APP_SECRET="${{ secrets.WECHAT_APP_SECRET }}"
+            -DREDIS_HOST="${{ secrets.REDIS_HOST }}"
+            -DREDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}"
+            -DREDIS_PORT="${{ secrets.REDIS_PORT }}"
+            -DREDIS_USERNAME="${{ secrets.REDIS_USERNAME }}"
+            -DREDIS_VERSION="${{ secrets.REDIS_VERSION }}"
 
       - name: Check api/target directory
         run: |
