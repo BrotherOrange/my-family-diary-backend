@@ -12,6 +12,26 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  data:
+    redis:
+      version: ${REDIS_VERSION}
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      username: ${REDIS_USERNAME:default}
+      password: ${REDIS_PASSWORD}
+      lettuce:
+        pool:
+          enabled: true
+          max-idle: 8
+          min-idle: 2
+          max-wait: 2000ms
+
+management:
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
 
 logging:
   level:

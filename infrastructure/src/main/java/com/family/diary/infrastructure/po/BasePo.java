@@ -27,7 +27,6 @@ import lombok.experimental.Accessors;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
