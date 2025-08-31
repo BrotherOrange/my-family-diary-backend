@@ -19,13 +19,13 @@ import com.family.diary.common.enums.status.UserEmotionStatus;
 import com.family.diary.domain.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * 用户实体
@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
@@ -45,6 +45,11 @@ public class UserEntity extends BaseEntity {
      * 微信账户OpenID
      */
     private String openId;
+
+    /**
+     * 家庭ID
+     */
+    private String familyId;
 
     /**
      * 用户名
@@ -59,7 +64,7 @@ public class UserEntity extends BaseEntity {
     /**
      * 生日
      */
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 
     /**
      * 手机号

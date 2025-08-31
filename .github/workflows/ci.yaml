@@ -42,7 +42,8 @@ jobs:
             -DREDIS_PASSWORD="${{ secrets.REDIS_PASSWORD }}" \
             -DREDIS_PORT="${{ secrets.REDIS_PORT }}" \
             -DREDIS_USERNAME="${{ secrets.REDIS_USERNAME }}" \
-            -DREDIS_VERSION="${{ secrets.REDIS_VERSION }}"
+            -DREDIS_VERSION="${{ secrets.REDIS_VERSION }}" \
+            -DJWT_SECRET="${{ secrets.JWT_SECRET }}"
 
       - name: Check api/target directory
         run: |

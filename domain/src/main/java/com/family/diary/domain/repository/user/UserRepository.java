@@ -26,16 +26,25 @@ import com.family.diary.domain.entity.user.UserEntity;
 public interface UserRepository {
     /**
      * 保存新用户
+     *
+     * @param user 用户实体
+     * @return 保存的记录数：1成功，0失败
      */
-    void save(UserEntity user);
+    int save(UserEntity user);
 
     /**
      * 通过用户ID查询用户
+     *
+     * @param id 用户ID
+     * @return 用户实体
      */
     UserEntity findById(Long id);
 
     /**
-     * 通过OpenID查询用户
+     * 通过微信OpenID查询用户
+     *
+     * @param openId 微信用户OpenID
+     * @return 用户实体
      */
     UserEntity findByOpenId(String openId);
 }

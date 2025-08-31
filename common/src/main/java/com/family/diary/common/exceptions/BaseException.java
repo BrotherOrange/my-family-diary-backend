@@ -16,6 +16,7 @@
 package com.family.diary.common.exceptions;
 
 import com.family.diary.common.enums.errors.ExceptionErrorCode;
+import lombok.Getter;
 
 /**
  * 基础异常类，所有自定义异常都应继承此类
@@ -23,6 +24,8 @@ import com.family.diary.common.enums.errors.ExceptionErrorCode;
  * @author Richard Zhang
  * @since 2025-07-12
  */
+
+@Getter
 public class BaseException extends RuntimeException {
     /**
      * 错误码
@@ -79,15 +82,6 @@ public class BaseException extends RuntimeException {
     public BaseException(ExceptionErrorCode errorCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
-    }
-
-    /**
-     * 获取错误码
-     *
-     * @return ExceptionErrorCode
-     */
-    public ExceptionErrorCode getErrorCode() {
-        return errorCode;
     }
 
     @Override

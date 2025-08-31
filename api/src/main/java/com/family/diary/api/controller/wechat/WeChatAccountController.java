@@ -17,12 +17,16 @@ package com.family.diary.api.controller.wechat;
 
 import com.family.diary.api.dto.request.wechat.WeChatAccountInfoQueryRequest;
 import com.family.diary.api.dto.response.wechat.WeChatUserEncryptedDataResponse;
+import com.family.diary.api.mapper.wechat.WeChatAccountInfoQueryMapper;
 import com.family.diary.api.service.wechat.WeChatAccountService;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.CommonResponse;
-import lombok.AllArgsConstructor;
+import com.family.diary.domain.entity.wechat.WeChatAccountInfoQueryEntity;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,10 +40,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
+@Validated
 @RequestMapping("/v1/wechat/account")
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class WeChatAccountController {
     private final WeChatAccountService weChatAccountService;
+
+    private final WeChatAccountInfoQueryMapper weChatAccountInfoQueryMapper;
 
     /**
      * 获取微信用户信息
@@ -49,9 +56,10 @@ public class WeChatAccountController {
      */
     @PostMapping("/info")
     public CommonResponse<WeChatUserEncryptedDataResponse> getWeChatAccountInfo(
-            @RequestBody WeChatAccountInfoQueryRequest request) {
+            @RequestBody @Valid WeChatAccountInfoQueryRequest request) {
+        WeChatAccountInfoQueryEntity entity = weChatAccountInfoQueryMapper.toWeChatAccountInfoQueryEntity(request);
         try {
-            WeChatUserEncryptedDataResponse response = weChatAccountService.getWeChatAccountInfo(request);
+            WeChatUserEncryptedDataResponse response = weChatAccountService.getWeChatAccountInfo(entity);
             log.info("获取微信用户信息成功，用户ID: {}", response.getOpenId());
             return CommonResponse.ok(response);
         } catch (BaseException e) {

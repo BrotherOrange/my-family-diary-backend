@@ -25,6 +25,7 @@ import lombok.Getter;
  */
 @Getter
 public enum ResponseErrorCode {
+    BAD_REQUEST(400, "非法请求"),
     INTERNAL_SERVER_ERROR(500, "服务器内部错误"),
     NOT_IMPLEMENTED(501, "功能未实现"),
     BAD_GATEWAY(502, "错误网关"),

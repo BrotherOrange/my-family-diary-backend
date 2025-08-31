@@ -15,31 +15,36 @@
 
 package com.family.diary.infrastructure.mapper.user;
 
-import com.family.diary.common.enums.status.UserEmotionStatus;
+import com.family.diary.common.mapper.CommonConvertMapper;
 import com.family.diary.domain.entity.user.UserEntity;
 import com.family.diary.infrastructure.po.user.UserPo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring", uses = { CommonConvertMapper.class})
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
+    /**
+     * UserEntity -> UserPo
+     *
+     * @param userEntity UserEntity
+     * @return UserPo
+     */
     @Mapping(source = "status", target = "status", qualifiedByName = "statusToString")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     UserPo toUserPo(UserEntity userEntity);
 
+    /**
+     * UserPo -> UserEntity
+     *
+     * @param userPO UserPo
+     * @return UserEntity
+     */
     @Mapping(source = "status", target = "status", qualifiedByName = "stringToStatus")
+    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "updatedAt", source = "updatedAt")
     UserEntity toUserEntity(UserPo userPO);
-
-    @Named("statusToString")
-    default String statusToString(UserEmotionStatus status) {
-        return status != null ? status.getDescription() : null; // 假设你的枚举有 getCode() 方法
-    }
-
-    @Named("stringToStatus")
-    default UserEmotionStatus stringToStatus(String status) {
-        return status != null ? UserEmotionStatus.valueOf(status) : null; // 假设你有 fromCode 方法
-    }
 }

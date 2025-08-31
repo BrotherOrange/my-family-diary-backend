@@ -17,6 +17,9 @@ package com.family.diary.common.enums.status;
 
 import lombok.Getter;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * 用户情绪状态枚举
  * 该枚举定义了用户可能的情绪状态，便于在应用中进行情绪相关的处理和展示。
@@ -73,7 +76,40 @@ public enum UserEmotionStatus {
 
     private final String description;
 
+    private static final Map<String, UserEmotionStatus> DESCRIPTION_TO_ENUM = new ConcurrentHashMap<>();
+
     UserEmotionStatus(String description) {
         this.description = description;
+    }
+
+    static {
+        for (UserEmotionStatus status : values()) {
+            DESCRIPTION_TO_ENUM.put(status.description, status);
+        }
+    }
+
+    /**
+     * 根据描述文本获取对应的枚举实例（高效 O(1) 查找）
+     *
+     * @param description 情绪的中文描述，如 "开心"、"难过" 等
+     * @return 对应的 UserEmotionStatus 枚举实例
+     * @throws IllegalArgumentException 如果没有找到匹配的枚举值
+     */
+    public static UserEmotionStatus fromDescription(String description) {
+        UserEmotionStatus status = DESCRIPTION_TO_ENUM.get(description);
+        if (status == null) {
+            throw new IllegalArgumentException("No enum constant with description: " + description);
+        }
+        return status;
+    }
+
+    /**
+     * 安全版本：根据描述文本获取对应的枚举实例，未找到时返回 null
+     *
+     * @param description 情绪的中文描述
+     * @return 对应的枚举实例，若未找到则返回 null
+     */
+    public static UserEmotionStatus fromDescriptionOrNull(String description) {
+        return DESCRIPTION_TO_ENUM.get(description);
     }
 }

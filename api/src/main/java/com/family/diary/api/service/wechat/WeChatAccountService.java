@@ -18,6 +18,7 @@ package com.family.diary.api.service.wechat;
 import com.family.diary.api.dto.request.wechat.WeChatAccountInfoQueryRequest;
 import com.family.diary.api.dto.response.wechat.WeChatUserEncryptedDataResponse;
 import com.family.diary.common.exceptions.BaseException;
+import com.family.diary.domain.entity.wechat.WeChatAccountInfoQueryEntity;
 
 /**
  * 微信账户Service
@@ -29,9 +30,9 @@ public interface WeChatAccountService {
     /**
      * 获取微信账户信息
      *
-     * @param request 查询请求体
+     * @param entity 查询实体
      * @return 微信账户信息返回体
      * @throws BaseException 查询出现未知错误，进行捕获返回
      */
-    WeChatUserEncryptedDataResponse getWeChatAccountInfo(WeChatAccountInfoQueryRequest request) throws BaseException;
+    WeChatUserEncryptedDataResponse getWeChatAccountInfo(WeChatAccountInfoQueryEntity entity) throws BaseException;
 }

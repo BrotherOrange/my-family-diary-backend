@@ -51,3 +51,8 @@ tencent-cloud:
     region: ap-guangzhou
     host: cos.jihao-family.com
     default-host: jihao-family-1259817492.cos.ap-guangzhou.myqcloud.com
+
+jwt:
+  secret-key: ${JWT_SECRET}
+  token-header: Authorization
+  token-prefix: Bearer
