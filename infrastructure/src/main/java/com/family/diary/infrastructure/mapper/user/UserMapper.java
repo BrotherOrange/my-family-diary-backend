@@ -26,11 +26,23 @@ import org.mapstruct.factory.Mappers;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
+    /**
+     * UserEntity -> UserPo
+     *
+     * @param userEntity UserEntity
+     * @return UserPo
+     */
     @Mapping(source = "status", target = "status", qualifiedByName = "statusToString")
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")
     UserPo toUserPo(UserEntity userEntity);
 
+    /**
+     * UserPo -> UserEntity
+     *
+     * @param userPO UserPo
+     * @return UserEntity
+     */
     @Mapping(source = "status", target = "status", qualifiedByName = "stringToStatus")
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")

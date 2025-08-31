@@ -58,7 +58,7 @@ public interface UserApiMapper {
     /**
      * UserEntity -> UserLoginResponse
      *
-     * @param userEntity userEntity
+     * @param userEntity UserEntity
      * @return UserLoginResponse
      */
     @Mapping(source = "status", target = "status", qualifiedByName = "statusToStringWithDefault")

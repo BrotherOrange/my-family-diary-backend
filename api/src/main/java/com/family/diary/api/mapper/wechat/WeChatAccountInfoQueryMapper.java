@@ -27,7 +27,7 @@ public interface WeChatAccountInfoQueryMapper {
     /**
      * WeChatAccountInfoQueryRequest -> WeChatAccountInfoQueryEntity
      *
-     * @param weChatAccountInfoQueryRequest weChatAccountInfoQueryRequest
+     * @param weChatAccountInfoQueryRequest WeChatAccountInfoQueryRequest
      * @return WeChatAccountInfoQueryEntity
      */
     WeChatAccountInfoQueryEntity toWeChatAccountInfoQueryEntity(
