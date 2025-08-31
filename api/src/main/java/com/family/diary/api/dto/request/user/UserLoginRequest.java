@@ -40,13 +40,13 @@ public class UserLoginRequest {
     /**
      * 微信OpenId
      */
-    @NotBlank
+    @NotBlank(message = "微信Open ID不得为空")
     String openId;
 
     /**
      * 密码
      */
-    @NotBlank
-    @Size(min = 8, max = 30)
+    @NotBlank(message = "密码不得为空")
+    @Size(min = 8, max = 30, message = "密码长度必须为8-30位之间")
     String password;
 }
