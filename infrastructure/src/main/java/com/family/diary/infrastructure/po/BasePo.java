@@ -18,15 +18,16 @@ package com.family.diary.infrastructure.po;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
@@ -36,15 +37,15 @@ public abstract class BasePo {
      * 主键ID
      */
     @TableId(type = IdType.ASSIGN_ID)
-    private Long id;
+    protected Long id;
 
     /**
      * 创建时间
      */
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt;
 
     /**
      * 更新时间
      */
-    private LocalDateTime updatedAt;
+    protected LocalDateTime updatedAt;
 }

@@ -15,6 +15,7 @@
 
 package com.family.diary.api.dto.request.wechat;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,15 +33,18 @@ public class WeChatAccountInfoQueryRequest {
     /**
      * 小程序登录凭证 code
      */
+    @NotBlank(message = "code不能为空")
     private String code;
 
     /**
      * 加密算法的初始向量
      */
+    @NotBlank(message = "iv不能为空")
     private String iv;
 
     /**
      * 包括敏感数据在内的完整用户信息的加密数据
      */
+    @NotBlank(message = "encryptedData不能为空")
     private String encryptedData;
 }

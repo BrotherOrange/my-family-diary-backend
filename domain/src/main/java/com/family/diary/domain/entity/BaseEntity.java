@@ -20,6 +20,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
  * @since 2025-07-15
  */
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
@@ -38,15 +40,15 @@ public abstract class BaseEntity {
     /**
      * 实体ID
      */
-    private Long id;
+    protected Long id;
 
     /**
      * 创建时间
      */
-    private LocalDateTime createdAt;
+    protected LocalDateTime createdAt = LocalDateTime.now();
 
     /**
      * 更新时间
      */
-    private LocalDateTime updatedAt;
+    protected LocalDateTime updatedAt = LocalDateTime.now();
 }

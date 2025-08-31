@@ -37,9 +37,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class RedisUtil {
-
     private final RedisTemplate<String, Object> redisTemplate;
-    private final RedisScript<Long>             releaseLockScript;
+
+    private final RedisScript<Long> releaseLockScript;
 
     @Autowired
     public RedisUtil(RedisTemplate<String, Object> redisTemplate) {

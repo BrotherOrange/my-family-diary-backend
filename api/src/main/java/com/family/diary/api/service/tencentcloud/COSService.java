@@ -15,8 +15,8 @@
 
 package com.family.diary.api.service.tencentcloud;
 
-import com.family.diary.api.dto.request.tencentcloud.cos.COSAvatarUploadRequest;
 import com.family.diary.common.exceptions.BaseException;
+import com.family.diary.domain.entity.tencentcloud.cos.COSAvatarUploadEntity;
 
 /**
  * COS对象服务Service
@@ -28,11 +28,11 @@ public interface COSService {
     /**
      * 上传头像到腾讯云COS
      *
-     * @param request 包含上传信息的请求对象
+     * @param entity 包含上传信息的实体
      * @return 上传后的临时图片URL
      * @throws BaseException 如果上传失败或发生其他错误
      */
-    String uploadAvatarToCOS(COSAvatarUploadRequest request) throws BaseException;
+    String uploadAvatarToCOS(COSAvatarUploadEntity entity) throws BaseException;
 
     /**
      * 获取用户头像的临时URL

@@ -1,6 +1,7 @@
 package com.family.diary.api;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @Slf4j
 @EnableAsync
 @SpringBootApplication
+@MapperScan("com.family.diary.infrastructure.dao")
 public class Application {
 
     public static void main(String[] args) {

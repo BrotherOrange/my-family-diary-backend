@@ -15,6 +15,7 @@
 
 package com.family.diary.api.dto.request.tencentcloud.cos;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,11 +33,13 @@ public class COSAvatarUploadRequest {
     /**
      * 用户的 OpenID
      */
+    @NotBlank(message = "OpenID不能为空")
     private String openId;
 
     /**
      * 用户的头像 Base64 编码字符串
      * 注意：Base64 编码的字符串需要去掉前缀 "data:image/png;base64,"
      */
+    @NotBlank(message = "头像 Base64 编码不能为空")
     private String base64Image;
 }

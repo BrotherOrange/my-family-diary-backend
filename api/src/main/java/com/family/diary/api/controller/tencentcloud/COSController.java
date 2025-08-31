@@ -16,12 +16,17 @@
 package com.family.diary.api.controller.tencentcloud;
 
 import com.family.diary.api.dto.request.tencentcloud.cos.COSAvatarUploadRequest;
+import com.family.diary.api.mapper.tencentcloud.cos.COSAvatarUploadMapper;
 import com.family.diary.api.service.tencentcloud.COSService;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.CommonResponse;
-import lombok.AllArgsConstructor;
+import com.family.diary.domain.entity.tencentcloud.cos.COSAvatarUploadEntity;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,14 +38,17 @@ import org.springframework.web.bind.annotation.RestController;
  * COS对象存储服务Controller
  *
  * @author Richard Zhang
- * @sincce 2025-07-15
+ * @since 2025-07-15
  */
 @Slf4j
 @RestController
+@Validated
 @RequestMapping("/v1/cos")
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class COSController {
     private final COSService cosService;
+
+    private final COSAvatarUploadMapper cosAvatarUploadMapper;
 
     /**
      * 上传头像
@@ -49,10 +57,11 @@ public class COSController {
      * @return 头像临时链接
      */
     @PostMapping("/avatar/upload")
-    public CommonResponse<String> uploadAvatar(@RequestBody COSAvatarUploadRequest request) {
+    public CommonResponse<String> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
+        log.info("开始上传头像");
+        COSAvatarUploadEntity entity = cosAvatarUploadMapper.toCOSAvatarUploadEntity(request);
         try {
-            log.info("开始上传头像");
-            String tempAvatarUrl = cosService.uploadAvatarToCOS(request);
+            String tempAvatarUrl = cosService.uploadAvatarToCOS(entity);
             return CommonResponse.ok(tempAvatarUrl);
         } catch (BaseException e) {
             log.error("头像上传失败", e);
@@ -67,7 +76,8 @@ public class COSController {
      * @return 头像临时链接
      */
     @GetMapping("/avatar/url")
-    public CommonResponse<String> getAvatarUrl(@RequestParam String openId) {
+    public CommonResponse<String> getAvatarUrl(
+            @RequestParam @Valid @NotEmpty(message = "openid不能为空") String openId) {
         log.info("开始获取头像URL");
         String tempAvatarUrl = cosService.getAvatarUrl(openId);
         return CommonResponse.ok(tempAvatarUrl);
