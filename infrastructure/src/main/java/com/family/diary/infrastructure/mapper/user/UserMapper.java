@@ -37,6 +37,7 @@ public interface UserMapper {
     @Mapping(target = "flag", source = "flag", qualifiedByName = "userFlagToString")
     @Mapping(target = "createdAt", source = "createdAt")
     @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "deletedAt", source = "deletedAt")
     UserPo toUserPo(UserEntity userEntity);
 
     /**
@@ -48,6 +49,6 @@ public interface UserMapper {
     @Mapping(source = "status", target = "status", qualifiedByName = "userStringToStatus")
     @Mapping(target = "flag", source = "flag", qualifiedByName = "userStringToFlag")
     @Mapping(target = "createdAt", source = "createdAt")
-    @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(target = "deletedAt", source = "deletedAt")
     UserEntity toUserEntity(UserPo userPO);
 }

@@ -48,4 +48,9 @@ public abstract class BasePo {
      * 更新时间
      */
     protected LocalDateTime updatedAt;
+
+    /**
+     * 删除时间
+     */
+    protected LocalDateTime deletedAt;
 }

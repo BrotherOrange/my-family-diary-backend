@@ -51,4 +51,9 @@ public abstract class BaseEntity {
      * 更新时间
      */
     protected LocalDateTime updatedAt = LocalDateTime.now();
+
+    /**
+     * 删除时间
+     */
+    protected LocalDateTime deletedAt;
 }
