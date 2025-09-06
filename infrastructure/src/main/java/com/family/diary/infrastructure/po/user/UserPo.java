@@ -40,11 +40,6 @@ public class UserPo extends BasePo {
     private String openId;
 
     /**
-     * 家庭ID
-     */
-    private String familyId;
-
-    /**
      * 用户名
      */
     private String username;
@@ -73,4 +68,9 @@ public class UserPo extends BasePo {
      * 用户情绪状态
      */
     private String status;
+
+    /**
+     * 用户状态
+     */
+    private String flag;
 }

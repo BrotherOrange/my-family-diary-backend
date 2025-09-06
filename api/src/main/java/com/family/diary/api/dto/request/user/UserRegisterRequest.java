@@ -49,12 +49,6 @@ public class UserRegisterRequest {
     private String openId;
 
     /**
-     * 家庭ID
-     */
-    @NotBlank(message = "家庭ID不得为空")
-    private String familyId;
-
-    /**
      * 用户名
      */
     @NotBlank(message = "用户名不得为空")

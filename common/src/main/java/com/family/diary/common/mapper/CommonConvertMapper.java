@@ -33,44 +33,6 @@ import java.time.format.DateTimeFormatter;
 @Mapper(componentModel = "spring")
 public interface CommonConvertMapper {
     /**
-     * UserEmotionStatus -> String
-     *
-     * @param status UserEmotionStatus
-     * @return String
-     */
-    @Named("statusToString")
-    default String statusToString(UserEmotionStatus status) {
-        return status != null ? status.getDescription() : null;
-    }
-
-    /**
-     * UserEmotionStatus -> String (包含默认值)
-     *
-     * @param status UserEmotionStatus
-     * @return String
-     */
-    @Named("statusToStringWithDefault")
-    default String statusToStringWithDefault(UserEmotionStatus status) {
-        return status != null ? status.getDescription() : UserEmotionStatus.PEACE.getDescription();
-    }
-
-    /**
-     * String -> UserEmotionStatus
-     *
-     * @param status Status-String
-     * @return String
-     * @throws MapperException 映射异常
-     */
-    @Named("stringToStatus")
-    default UserEmotionStatus stringToStatus(String status) throws MapperException {
-        try {
-            return status != null ? UserEmotionStatus.fromDescription(status) : null;
-        } catch (IllegalArgumentException e) {
-            throw new MapperException("映射字符串不存在：" + e.getMessage());
-        }
-    }
-
-    /**
      * LocalDateTime -> String
      *
      * @param dateTime LocalDateTime
