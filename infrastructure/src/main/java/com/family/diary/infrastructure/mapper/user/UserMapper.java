@@ -23,6 +23,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+/**
+ * 用户持久化与实体映射接口类
+ *
+ * @author Richard Zhang
+ * @since 2025-07-19
+ */
 @Mapper(componentModel = "spring", uses = { CommonConvertMapper.class, UserConvertMapper.class })
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);

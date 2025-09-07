@@ -19,6 +19,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.family.diary.infrastructure.po.user.UserPo;
 import org.apache.ibatis.annotations.Mapper;
 
+/**
+ * 用户DAO接口类
+ *
+ * @author Richard Zhang
+ * @since 2025-07-19
+ */
 @Mapper
 public interface UserDAO extends BaseMapper<UserPo> {
 }

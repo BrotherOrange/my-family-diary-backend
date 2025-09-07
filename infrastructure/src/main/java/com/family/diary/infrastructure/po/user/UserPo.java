@@ -26,6 +26,12 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
+/**
+ * 用户持久化对象
+ *
+ * @author Richard Zhang
+ * @since 2025-07-19
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder

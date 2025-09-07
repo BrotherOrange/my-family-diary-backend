@@ -26,6 +26,12 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
+/**
+ * 基础抽象持久化层
+ *
+ * @author Richard Zhang
+ * @since 2025-07-19
+ */
 @Data
 @SuperBuilder
 @NoArgsConstructor
