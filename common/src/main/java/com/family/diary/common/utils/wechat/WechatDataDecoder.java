@@ -46,23 +46,23 @@ public class WechatDataDecoder {
         log.debug("Encrypted Data: {}", encryptedData);
         log.debug("Session Key: {}", sessionKey);
         log.debug("IV: {}", iv);
-        byte[] encryptedDataBytes = Base64.getDecoder().decode(encryptedData);
-        byte[] sessionKeyBytes = Base64.getDecoder().decode(sessionKey);
-        byte[] ivBytes = Base64.getDecoder().decode(iv);
+        var encryptedDataBytes = Base64.getDecoder().decode(encryptedData);
+        var sessionKeyBytes = Base64.getDecoder().decode(sessionKey);
+        var ivBytes = Base64.getDecoder().decode(iv);
 
         // 创建 AES 密钥和初始向量
         log.debug("准备解密Session Key 和 IV");
-        SecretKeySpec secretKeySpec = new SecretKeySpec(sessionKeyBytes, "AES");
-        IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
+        var secretKeySpec = new SecretKeySpec(sessionKeyBytes, "AES");
+        var ivParameterSpec = new IvParameterSpec(ivBytes);
 
         // 初始化 Cipher
         log.debug("初始化 AES/CBC/PKCS5Padding 解密模式");
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        var cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec);
 
         // 解密
         log.debug("开始解密数据");
-        byte[] decryptedBytes = cipher.doFinal(encryptedDataBytes);
+        var decryptedBytes = cipher.doFinal(encryptedDataBytes);
         log.debug("解密完成");
         return new String(decryptedBytes, StandardCharsets.UTF_8);
     }

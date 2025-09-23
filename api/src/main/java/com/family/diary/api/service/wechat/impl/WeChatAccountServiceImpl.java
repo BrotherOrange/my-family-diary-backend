@@ -61,24 +61,24 @@ public class WeChatAccountServiceImpl implements WeChatAccountService {
     public WeChatUserEncryptedDataResponse getWeChatAccountInfo(WeChatAccountInfoQueryEntity entity)
             throws BaseException {
         log.info("获取微信用户信息，request: {}", gson.toJson(entity));
-        String code = entity.getCode();
-        String iv = entity.getIv();
-        String encryptedData = entity.getEncryptedData();
+        var code = entity.getCode();
+        var iv = entity.getIv();
+        var encryptedData = entity.getEncryptedData();
         try {
-            String requestUrl = codeToSessionUrl + "?appid=" + appId +
+            var requestUrl = codeToSessionUrl + "?appid=" + appId +
                     "&secret=" + appSecret +
                     "&js_code=" + code +
                     "&grant_type=authorization_code";
 
-            URI url = new URI(requestUrl);
-            HttpHeaders headers = new HttpHeaders();
+            var url = new URI(requestUrl);
+            var headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-            HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+            var httpEntity = new HttpEntity<>(headers);
             WeChatSessionResponse sessionResponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
                     WeChatSessionResponse.class).getBody();
             log.info("获取微信用户会话信息成功，sessionResponse: {}", gson.toJson(sessionResponse));
             assert sessionResponse != null;
-            String decryptedData = wechatDataDecoder.decryptData(encryptedData, sessionResponse.getSessionKey(), iv);
+            var decryptedData = wechatDataDecoder.decryptData(encryptedData, sessionResponse.getSessionKey(), iv);
             log.info("获取解密的微信用户信息成功，decryptedData: {}", gson.toJson(decryptedData));
             return gson.fromJson(decryptedData, WeChatUserEncryptedDataResponse.class);
         } catch (Exception e) {

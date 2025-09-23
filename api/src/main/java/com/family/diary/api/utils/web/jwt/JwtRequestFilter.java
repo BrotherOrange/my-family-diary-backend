@@ -17,7 +17,6 @@ package com.family.diary.api.utils.web.jwt;
 
 import com.family.diary.api.service.user.UserService;
 import com.family.diary.common.utils.web.jwt.JwtUtil;
-import com.family.diary.domain.entity.user.UserEntity;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -56,7 +55,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain chain)
             throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader(tokenHeader);
+        final var authorizationHeader = request.getHeader(tokenHeader);
 
         String openId = null;
         String jwt = null;
@@ -75,12 +74,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // 如果提取到了用户名，并且当前没有认证
         if (openId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserEntity userDetails = userService.findByOpenId(openId);
+            var userDetails = userService.findByOpenId(openId);
 
             // 验证Token
             if (userDetails != null && jwtUtil.validateToken(jwt, openId)) {
                 // 创建认证对象
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                var authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, new ArrayList<>());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 // 设置认证信息到SecurityContext

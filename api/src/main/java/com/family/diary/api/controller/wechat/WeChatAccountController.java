@@ -57,9 +57,9 @@ public class WeChatAccountController {
     @PostMapping("/info")
     public CommonResponse<WeChatUserEncryptedDataResponse> getWeChatAccountInfo(
             @RequestBody @Valid WeChatAccountInfoQueryRequest request) {
-        WeChatAccountInfoQueryEntity entity = weChatAccountInfoQueryMapper.toWeChatAccountInfoQueryEntity(request);
+        var entity = weChatAccountInfoQueryMapper.toWeChatAccountInfoQueryEntity(request);
         try {
-            WeChatUserEncryptedDataResponse response = weChatAccountService.getWeChatAccountInfo(entity);
+            var response = weChatAccountService.getWeChatAccountInfo(entity);
             log.info("获取微信用户信息成功，用户ID: {}", response.getOpenId());
             return CommonResponse.ok(response);
         } catch (BaseException e) {

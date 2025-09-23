@@ -46,11 +46,11 @@ public class ValidationExceptionHandler extends BaseExceptionHandler {
             MethodArgumentNotValidException ex) {
         logError(ex);
 
-        Map<String, String> errors = new HashMap<>();
+        var errors = new HashMap<String, String>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage()));
 
-        ErrorMap errorResponse = buildErrorMap("Method Validation failed", errors);
+        var errorResponse = buildErrorMap("Method Validation failed", errors);
         return CommonResponse.fail(ResponseErrorCode.BAD_REQUEST, errorResponse.message() + ": " + errors.values());
     }
 
@@ -59,11 +59,11 @@ public class ValidationExceptionHandler extends BaseExceptionHandler {
             ConstraintViolationException ex) {
         logError(ex);
 
-        Map<String, String> errors = new HashMap<>();
+        var errors = new HashMap<String, String>();
         ex.getConstraintViolations().forEach(violation ->
                 errors.put(violation.getPropertyPath().toString(), violation.getMessage()));
 
-        ErrorMap errorResponse = buildErrorMap("Constraint Validation failed", errors);
+        var errorResponse = buildErrorMap("Constraint Validation failed", errors);
         return CommonResponse.fail(ResponseErrorCode.BAD_REQUEST, errorResponse.message() + ": " + errors.values());
     }
 }

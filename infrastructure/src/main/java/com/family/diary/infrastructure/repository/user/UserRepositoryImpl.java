@@ -59,9 +59,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserEntity findByOpenId(String openId) throws QueryException {
-        LambdaQueryWrapper<UserPo> queryWrapper = new QueryWrapper<UserPo>().lambda().eq(UserPo::getOpenId, openId);
+        var queryWrapper = new QueryWrapper<UserPo>().lambda().eq(UserPo::getOpenId, openId);
         try {
-            UserPo userPo = userDAO.selectOne(queryWrapper);
+            var userPo = userDAO.selectOne(queryWrapper);
             return userPo != null ? userMapper.toUserEntity(userPo) : null;
         } catch (TooManyResultsException e) {
             log.error("OpenId {} 查询到多个用户", openId);

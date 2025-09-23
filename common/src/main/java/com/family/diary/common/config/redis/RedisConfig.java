@@ -52,7 +52,7 @@ public class RedisConfig {
      */
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration standaloneConfig = new RedisStandaloneConfiguration();
+        var standaloneConfig = new RedisStandaloneConfiguration();
         standaloneConfig.setHostName(redisProperties.getHost());
         standaloneConfig.setPort(redisProperties.getPort());
         if (!redisProperties.isVersionLessThan6()) {
@@ -62,7 +62,7 @@ public class RedisConfig {
         }
         standaloneConfig.setPassword(redisProperties.getPassword());
 
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+        var clientConfig = LettuceClientConfiguration.builder()
                 .clientName(RedisConstants.REDIS_CLIENT_NAME)
                 .build();
 
@@ -84,7 +84,7 @@ public class RedisConfig {
      */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        var template = new RedisTemplate<String, Object>();
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
@@ -92,14 +92,14 @@ public class RedisConfig {
     }
 
     private boolean isPoolEnabled() {
-        PoolProperties pool = redisProperties.getLettuce().getPool();
+        var pool = redisProperties.getLettuce().getPool();
         return pool != null && pool.isEnabled();
     }
 
     private GenericObjectPoolConfig<?> buildPoolConfig() {
-        PoolProperties pool = redisProperties.getLettuce().getPool();
+        var pool = redisProperties.getLettuce().getPool();
 
-        GenericObjectPoolConfig<?> poolConfig = new GenericObjectPoolConfig<>();
+        var poolConfig = new GenericObjectPoolConfig<>();
         poolConfig.setMaxTotal(16); // 默认最大连接数
         poolConfig.setMinIdle(pool.getMinIdle());
         poolConfig.setMaxIdle(pool.getMaxIdle());

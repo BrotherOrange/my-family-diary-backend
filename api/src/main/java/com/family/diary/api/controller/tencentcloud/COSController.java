@@ -59,9 +59,9 @@ public class COSController {
     @PostMapping("/avatar/upload")
     public CommonResponse<String> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
         log.info("开始上传头像");
-        COSAvatarUploadEntity entity = cosAvatarUploadMapper.toCOSAvatarUploadEntity(request);
+        var entity = cosAvatarUploadMapper.toCOSAvatarUploadEntity(request);
         try {
-            String tempAvatarUrl = cosService.uploadAvatarToCOS(entity);
+            var tempAvatarUrl = cosService.uploadAvatarToCOS(entity);
             return CommonResponse.ok(tempAvatarUrl);
         } catch (BaseException e) {
             log.error("头像上传失败", e);
@@ -79,7 +79,7 @@ public class COSController {
     public CommonResponse<String> getAvatarUrl(
             @RequestParam @Valid @NotEmpty(message = "openid不能为空") String openId) {
         log.info("开始获取头像URL");
-        String tempAvatarUrl = cosService.getAvatarUrl(openId);
+        var tempAvatarUrl = cosService.getAvatarUrl(openId);
         return CommonResponse.ok(tempAvatarUrl);
     }
 }

@@ -67,7 +67,7 @@ public class JwtUtil {
      * @return 特定声明
      */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
+        final var claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
@@ -93,7 +93,7 @@ public class JwtUtil {
      * @return 是：有效 / 否：无效
      */
     public Boolean validateToken(String token, String openId) {
-        final String extractedOpenId = extractOpenId(token);
+        final var extractedOpenId = extractOpenId(token);
         return (extractedOpenId.equals(openId) && !isTokenExpired(token));
     }
 
