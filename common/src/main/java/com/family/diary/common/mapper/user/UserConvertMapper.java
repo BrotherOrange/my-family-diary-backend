@@ -82,7 +82,7 @@ public interface UserConvertMapper {
     @Named("userStringToFlag")
     default UserFlagStatus userStringToFlag(String flagStatus) throws MapperException {
         try {
-            return flagStatus != null ? UserFlagStatus.valueOf(flagStatus) : null;
+            return flagStatus != null ? UserFlagStatus.getByDescription(flagStatus) : null;
         } catch (IllegalArgumentException e) {
             throw new MapperException("映射字符串不存在：" + e.getMessage());
         }

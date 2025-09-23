@@ -17,6 +17,10 @@ package com.family.diary.common.enums.status;
 
 import lombok.Getter;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * 用户账户状态枚举类
  */
@@ -37,9 +41,29 @@ public enum UserFlagStatus {
      */
     DELETED("deleted");
 
+    /**
+     * 枚举与描述的映射关系
+     */
+    private static final Map<String, UserFlagStatus> DESCRIPTION_MAP =
+            Stream.of(values())
+                    .collect(Collectors.toUnmodifiableMap(
+                            UserFlagStatus::getDescription,
+                            status -> status
+                    ));
+
     private final String description;
 
     UserFlagStatus(String description) {
         this.description = description;
+    }
+
+    /**
+     * 通过description获取对应的枚举实例
+     *
+     * @param description 描述信息
+     * @return 对应的枚举实例，如果没有找到则返回null
+     */
+    public static UserFlagStatus getByDescription(String description) {
+        return DESCRIPTION_MAP.get(description);
     }
 }
