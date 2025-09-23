@@ -58,12 +58,17 @@ public enum UserFlagStatus {
     }
 
     /**
-     * 通过description获取对应的枚举实例
+     * 通过description获取对应的枚举实例，找不到则抛出异常
      *
      * @param description 描述信息
-     * @return 对应的枚举实例，如果没有找到则返回null
+     * @return 对应的枚举实例
+     * @throws IllegalArgumentException 如果没有找到匹配的枚举
      */
-    public static UserFlagStatus getByDescription(String description) {
-        return DESCRIPTION_MAP.get(description);
+    public static UserFlagStatus getByDescription(String description) throws IllegalArgumentException {
+        UserFlagStatus status = DESCRIPTION_MAP.get(description);
+        if (status == null) {
+            throw new IllegalArgumentException("无效的用户状态描述: " + description);
+        }
+        return status;
     }
 }
