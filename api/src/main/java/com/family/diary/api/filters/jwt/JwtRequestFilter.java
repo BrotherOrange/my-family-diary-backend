@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.family.diary.api.utils.web.jwt;
+package com.family.diary.api.filters.jwt;
 
 import com.family.diary.api.service.user.UserService;
 import com.family.diary.common.utils.web.jwt.JwtUtil;
@@ -37,6 +37,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * 用于检测JwtToken合法性的Filter
+ *
+ * @author Richard Zhang
+ * @since 2025-11-19
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

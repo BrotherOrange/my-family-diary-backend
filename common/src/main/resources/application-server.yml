@@ -56,3 +56,7 @@ jwt:
   secret-key: ${JWT_SECRET}
   token-header: Authorization
   token-prefix: Bearer
+  token-redis-prefix: jwt-openid
+
+log-trace:
+  trace-header: x-trace-id

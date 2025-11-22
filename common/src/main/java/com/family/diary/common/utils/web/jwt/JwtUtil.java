@@ -16,22 +16,35 @@
 package com.family.diary.common.utils.web.jwt;
 
 import com.family.diary.common.constants.common.JWTConstants;
+import com.family.diary.common.constants.redis.RedisConstants;
+import com.family.diary.common.utils.redis.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class JwtUtil {
+
+    private final RedisUtil redisUtil;
 
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
+
+    @Value("${jwt.token-redis-prefix}")
+    private String JWT_REDIS_KEY_PREFIX;
 
     /**
      * 生成JWT Token
@@ -40,12 +53,16 @@ public class JwtUtil {
      * @return JWT Token String
      */
     public String generateToken(String openId) {
-        return Jwts.builder()
+        var token = Jwts.builder()
                 .setSubject(openId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JWTConstants.EXPIRATION_TIME))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS512) // 使用HS512算法
                 .compact();
+        var redisKey = buildJwtRedisTokenKey(openId);
+        redisUtil.delete(redisKey);
+        redisUtil.setWithExpire(redisKey, token, JWTConstants.EXPIRATION_TIME, TimeUnit.MILLISECONDS);
+        return token;
     }
 
     /**
@@ -72,6 +89,16 @@ public class JwtUtil {
     }
 
     /**
+     * 提取JwtToken的Redis Key值
+     *
+     * @param openId openId
+     * @return JwtToken的Redis Key值
+     */
+    public String buildJwtRedisTokenKey(String openId) {
+        return JWT_REDIS_KEY_PREFIX + RedisConstants.REDIS_KEY_CONNECTOR + openId;
+    }
+
+    /**
      * 解析Token获取所有声明
      *
      * @param token token
@@ -94,7 +121,12 @@ public class JwtUtil {
      */
     public Boolean validateToken(String token, String openId) {
         final var extractedOpenId = extractOpenId(token);
-        return (extractedOpenId.equals(openId) && !isTokenExpired(token));
+        var isValidToken = redisUtil.get(buildJwtRedisTokenKey(openId)).equals(token) && extractedOpenId.equals(openId)
+                && !isTokenExpired(token);
+        if (!isValidToken) {
+            log.warn("Open ID为{}的用户使用的token无效或过期", openId);
+        }
+        return isValidToken;
     }
 
     /**
