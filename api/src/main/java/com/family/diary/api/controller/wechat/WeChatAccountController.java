@@ -21,7 +21,6 @@ import com.family.diary.api.mapper.wechat.WeChatAccountInfoQueryMapper;
 import com.family.diary.api.service.wechat.WeChatAccountService;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.CommonResponse;
-import com.family.diary.domain.entity.wechat.WeChatAccountInfoQueryEntity;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

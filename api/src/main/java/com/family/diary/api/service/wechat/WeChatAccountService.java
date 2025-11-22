@@ -15,13 +15,12 @@
 
 package com.family.diary.api.service.wechat;
 
-import com.family.diary.api.dto.request.wechat.WeChatAccountInfoQueryRequest;
 import com.family.diary.api.dto.response.wechat.WeChatUserEncryptedDataResponse;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.domain.entity.wechat.WeChatAccountInfoQueryEntity;
 
 /**
- * 微信账户Service
+ * 微信账户服务接口类
  *
  * @author Richard Zhang
  * @since 2025-07-15

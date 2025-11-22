@@ -20,6 +20,12 @@ import com.family.diary.domain.entity.tencentcloud.cos.COSAvatarUploadEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+/**
+ * COS服务头像上传的映射接口类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-19
+ */
 @Mapper(componentModel = "spring")
 public interface COSAvatarUploadMapper {
     COSAvatarUploadMapper INSTANCE = Mappers.getMapper(COSAvatarUploadMapper.class);

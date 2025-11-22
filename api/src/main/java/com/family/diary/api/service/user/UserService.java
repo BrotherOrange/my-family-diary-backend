@@ -17,6 +17,12 @@ package com.family.diary.api.service.user;
 
 import com.family.diary.domain.entity.user.UserEntity;
 
+/**
+ * 用户功能服务接口类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 public interface UserService {
     /**
      * 创建新用户

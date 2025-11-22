@@ -16,7 +16,6 @@
 package com.family.diary.common.config.redis;
 
 import com.family.diary.common.constants.redis.RedisConstants;
-import com.family.diary.common.models.redis.PoolProperties;
 import com.family.diary.common.models.redis.RedisProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;

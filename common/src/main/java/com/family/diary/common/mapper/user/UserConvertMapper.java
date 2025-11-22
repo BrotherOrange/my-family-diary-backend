@@ -21,6 +21,12 @@ import com.family.diary.common.exceptions.mapper.MapperException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 
+/**
+ * 用户相关映射方法
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 @Mapper(componentModel = "spring")
 public interface UserConvertMapper {
     /**

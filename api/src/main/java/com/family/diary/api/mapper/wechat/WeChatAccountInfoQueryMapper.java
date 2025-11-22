@@ -20,6 +20,12 @@ import com.family.diary.domain.entity.wechat.WeChatAccountInfoQueryEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+/**
+ * 微信账户信息的映射接口类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-19
+ */
 @Mapper(componentModel = "spring")
 public interface WeChatAccountInfoQueryMapper {
     WeChatAccountInfoQueryMapper INSTANCE = Mappers.getMapper(WeChatAccountInfoQueryMapper.class);

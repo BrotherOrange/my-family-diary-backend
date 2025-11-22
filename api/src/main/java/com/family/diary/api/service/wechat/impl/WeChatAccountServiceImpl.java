@@ -38,6 +38,12 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.Collections;
 
+/**
+ * 微信账户服务实现类
+ *
+ * @author Richard Zhang
+ * @since 2025-07-15
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)

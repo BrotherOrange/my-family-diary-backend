@@ -15,6 +15,12 @@
 
 package com.family.diary.common.models.common.exception;
 
+/**
+ * 错误详情
+ *
+ * @param message 错误提示信息
+ * @param details 错误细节MetaData
+ */
 public record ErrorMap(String message,
                        Object details
 ) {

@@ -26,6 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * 用户功能服务实现类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)

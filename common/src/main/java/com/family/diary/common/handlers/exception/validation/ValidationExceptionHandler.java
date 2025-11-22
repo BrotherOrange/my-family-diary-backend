@@ -17,7 +17,6 @@ package com.family.diary.common.handlers.exception.validation;
 
 import com.family.diary.common.enums.errors.ResponseErrorCode;
 import com.family.diary.common.handlers.exception.BaseExceptionHandler;
-import com.family.diary.common.models.common.exception.ErrorMap;
 import com.family.diary.common.utils.common.CommonResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,6 +26,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 参数校验异常处理类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 @RestControllerAdvice
 public class ValidationExceptionHandler extends BaseExceptionHandler {
 

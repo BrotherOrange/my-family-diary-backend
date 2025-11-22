@@ -18,6 +18,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @MapperScan("com.family.diary.infrastructure.dao")
 public class Application {
 
+    /**
+     * 启动入口
+     *
+     * @param args 启动参数
+     */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
         log.info("昊昊和爸爸妈妈的小屋日记：后台启动成功！");

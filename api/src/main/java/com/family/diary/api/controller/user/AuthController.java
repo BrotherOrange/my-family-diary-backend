@@ -38,6 +38,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 用户认证Controller
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 @Slf4j
 @RestController
 @Validated

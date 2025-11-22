@@ -15,8 +15,6 @@
 
 package com.family.diary.common.mapper;
 
-import com.family.diary.common.enums.status.UserEmotionStatus;
-import com.family.diary.common.exceptions.mapper.MapperException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 

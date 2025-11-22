@@ -33,6 +33,12 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+/**
+ * JWT Token处理工具类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))

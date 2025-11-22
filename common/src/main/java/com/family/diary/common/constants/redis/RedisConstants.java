@@ -15,11 +15,18 @@
 
 package com.family.diary.common.constants.redis;
 
+/**
+ * Redis相关常量类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 public interface RedisConstants {
     /**
      * Redis Lettuce客户端名称
      */
     String REDIS_CLIENT_NAME = "my-family-diary-redis-client";
+
     /**
      * Redis锁Lya脚本名称
      */

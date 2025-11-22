@@ -18,6 +18,12 @@ package com.family.diary.common.utils.common;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * 密码工具类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 @Component
 public class PasswordUtil {
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();

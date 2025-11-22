@@ -20,7 +20,6 @@ import com.family.diary.api.mapper.tencentcloud.cos.COSAvatarUploadMapper;
 import com.family.diary.api.service.tencentcloud.COSService;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.CommonResponse;
-import com.family.diary.domain.entity.tencentcloud.cos.COSAvatarUploadEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;

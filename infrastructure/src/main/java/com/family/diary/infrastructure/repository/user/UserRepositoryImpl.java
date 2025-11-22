@@ -15,7 +15,6 @@
 
 package com.family.diary.infrastructure.repository.user;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.family.diary.common.exceptions.database.QueryException;
 import com.family.diary.domain.entity.user.UserEntity;
