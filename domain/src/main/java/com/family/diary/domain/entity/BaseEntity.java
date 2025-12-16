@@ -16,6 +16,7 @@
 package com.family.diary.domain.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -45,11 +46,13 @@ public abstract class BaseEntity {
     /**
      * 创建时间
      */
+    @Builder.Default
     protected LocalDateTime createdAt = LocalDateTime.now();
 
     /**
      * 更新时间
      */
+    @Builder.Default
     protected LocalDateTime updatedAt = LocalDateTime.now();
 
     /**
