@@ -15,7 +15,6 @@
 
 package com.family.diary.api.service.tencentcloud.impl;
 
-import com.family.diary.api.dto.request.tencentcloud.cos.COSAvatarUploadRequest;
 import com.family.diary.api.service.tencentcloud.COSService;
 import com.family.diary.common.config.tencentcloud.COSConfig;
 import com.family.diary.common.constants.common.ImageConstants;
@@ -36,6 +35,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * COS对象服务Service实现类
+ *
+ * @author Richard Zhang
+ * @since 2025-07-15
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)

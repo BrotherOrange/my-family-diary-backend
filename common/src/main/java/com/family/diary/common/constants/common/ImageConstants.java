@@ -15,6 +15,12 @@
 
 package com.family.diary.common.constants.common;
 
+/**
+ * 图片相关常量类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 public interface ImageConstants {
     String  IMAGE_PREFIX      = "image/";
 

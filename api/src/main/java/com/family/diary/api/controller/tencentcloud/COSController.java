@@ -20,12 +20,12 @@ import com.family.diary.api.mapper.tencentcloud.cos.COSAvatarUploadMapper;
 import com.family.diary.api.service.tencentcloud.COSService;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.CommonResponse;
-import com.family.diary.domain.entity.tencentcloud.cos.COSAvatarUploadEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,11 +57,11 @@ public class COSController {
      * @return 头像临时链接
      */
     @PostMapping("/avatar/upload")
-    public CommonResponse<String> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
+    public ResponseEntity<CommonResponse<String>> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
         log.info("开始上传头像");
-        COSAvatarUploadEntity entity = cosAvatarUploadMapper.toCOSAvatarUploadEntity(request);
+        var entity = cosAvatarUploadMapper.toCOSAvatarUploadEntity(request);
         try {
-            String tempAvatarUrl = cosService.uploadAvatarToCOS(entity);
+            var tempAvatarUrl = cosService.uploadAvatarToCOS(entity);
             return CommonResponse.ok(tempAvatarUrl);
         } catch (BaseException e) {
             log.error("头像上传失败", e);
@@ -76,10 +76,10 @@ public class COSController {
      * @return 头像临时链接
      */
     @GetMapping("/avatar/url")
-    public CommonResponse<String> getAvatarUrl(
+    public ResponseEntity<CommonResponse<String>> getAvatarUrl(
             @RequestParam @Valid @NotEmpty(message = "openid不能为空") String openId) {
         log.info("开始获取头像URL");
-        String tempAvatarUrl = cosService.getAvatarUrl(openId);
+        var tempAvatarUrl = cosService.getAvatarUrl(openId);
         return CommonResponse.ok(tempAvatarUrl);
     }
 }

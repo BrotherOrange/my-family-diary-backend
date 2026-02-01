@@ -15,11 +15,18 @@
 
 package com.family.diary.common.constants.redis;
 
+/**
+ * Redis相关常量类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 public interface RedisConstants {
     /**
      * Redis Lettuce客户端名称
      */
     String REDIS_CLIENT_NAME = "my-family-diary-redis-client";
+
     /**
      * Redis锁Lya脚本名称
      */
@@ -29,4 +36,9 @@ public interface RedisConstants {
      * Redis锁Lya脚本Resource路径
      */
     String REDIS_RELEASE_LOCK_LUA_PATH = "scripts/redis/release_lock.lua";
+
+    /**
+     * Redis Key的连接符
+     */
+    String REDIS_KEY_CONNECTOR = ":";
 }

@@ -22,7 +22,6 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.BasicSessionCredentials;
-import com.qcloud.cos.auth.COSCredentials;
 import com.qcloud.cos.region.Region;
 import com.qcloud.cos.utils.Jackson;
 import com.tencent.cloud.CosStsClient;
@@ -65,10 +64,10 @@ public class COSConfig {
     @Bean(name = "cosClient")
     public COSClient cosClient() {
         // 1 初始化用户身份信息(secretId, secretKey)
-        COSCredentials cred = new BasicCOSCredentials(apiSecretId, apiSecretKey);
+        var cred = new BasicCOSCredentials(apiSecretId, apiSecretKey);
         // 2 设置 bucket 的地域
-        Region region = new Region(cosRegion);
-        ClientConfig clientConfig = new ClientConfig(region);
+        var region = new Region(cosRegion);
+        var clientConfig = new ClientConfig(region);
         // 3 生成 cos 客户端
         return new COSClient(cred, clientConfig);
     }
@@ -79,18 +78,18 @@ public class COSConfig {
      * @return COSClient
      */
     public COSClient cosClientWithTempInfo() {
-        COSTempInfo cosTempInfo = getCosTempInfo();
-        COSCredentials cred = new BasicSessionCredentials(cosTempInfo.cosTempSecretId(), cosTempInfo.cosTempSecretKey(),
+        var cosTempInfo = getCosTempInfo();
+        var cred = new BasicSessionCredentials(cosTempInfo.cosTempSecretId(), cosTempInfo.cosTempSecretKey(),
                 cosTempInfo.cosTempToken());
         // 2 设置 bucket 的地域
-        Region region = new Region("ap-guangzhou");
-        ClientConfig clientConfig = new ClientConfig(region);
+        var region = new Region("ap-guangzhou");
+        var clientConfig = new ClientConfig(region);
         // 3 生成 cos 客户端
         return new COSClient(cred, clientConfig);
     }
 
     private COSTempInfo getCosTempInfo() {
-        TreeMap<String, Object> config = new TreeMap<>();
+        var config = new TreeMap<String, Object>();
         try {
             // 替换为您的云 api 密钥 SecretId
             config.put("secretId", apiSecretId);

@@ -16,6 +16,7 @@
 package com.family.diary.domain.entity.user;
 
 import com.family.diary.common.enums.status.UserEmotionStatus;
+import com.family.diary.common.enums.status.UserFlagStatus;
 import com.family.diary.domain.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -47,11 +48,6 @@ public class UserEntity extends BaseEntity {
     private String openId;
 
     /**
-     * 家庭ID
-     */
-    private String familyId;
-
-    /**
      * 用户名
      */
     private String username;
@@ -80,4 +76,9 @@ public class UserEntity extends BaseEntity {
      * 情绪状态
      */
     private UserEmotionStatus status;
+
+    /**
+     * 用户状态
+     */
+    private UserFlagStatus flag;
 }

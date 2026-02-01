@@ -13,61 +13,48 @@
  * limitations under the License.
  */
 
-package com.family.diary.api.dto.response.wechat;
+package com.family.diary.infrastructure.po.community.post;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.family.diary.infrastructure.po.BasePo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
 /**
- * 微信解密后的完整信息返回体
+ * 帖子与用户点踩关系持久化对象
  *
  * @author Richard Zhang
- * @since 2025-07-15
+ * @since 2025-09-07
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class WeChatUserEncryptedDataResponse {
+@Accessors(chain = true)
+@TableName("post_thumb_down")
+public class PostThumbDownPo extends BasePo {
     /**
-     * OpenID
+     * 帖子的ID
      */
-    private String openId;
+    private Long postId;
 
     /**
-     * 昵称
+     * 点踩帖子的用户ID
      */
-    private String nickName;
+    private Long userId;
 
     /**
-     * 性别
+     * 点踩帖子的用户微信Open ID
      */
-    private String gender;
+    private String userOpenId;
 
     /**
-     * 城市
+     * 删除标记位（0：生肖中，1：已删除）
      */
-    private String city;
-
-    /**
-     * 省份
-     */
-    private String province;
-
-    /**
-     * 国家
-     */
-    private String country;
-
-    /**
-     * 头像URL
-     */
-    private String avatarUrl;
-
-    /**
-     * Union ID
-     */
-    private String unionId;
+    private Integer isDeleted;
 }

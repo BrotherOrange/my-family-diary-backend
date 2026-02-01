@@ -59,9 +59,4 @@ public class UserRegisterResponse {
      * 个人状态
      */
     private String status;
-
-    /**
-     * 家庭ID
-     */
-    private String familyId;
 }

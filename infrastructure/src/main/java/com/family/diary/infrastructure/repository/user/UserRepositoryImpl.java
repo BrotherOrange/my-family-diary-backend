@@ -15,7 +15,6 @@
 
 package com.family.diary.infrastructure.repository.user;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.family.diary.common.exceptions.database.QueryException;
 import com.family.diary.domain.entity.user.UserEntity;
@@ -59,9 +58,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public UserEntity findByOpenId(String openId) throws QueryException {
-        LambdaQueryWrapper<UserPo> queryWrapper = new QueryWrapper<UserPo>().lambda().eq(UserPo::getOpenId, openId);
+        var queryWrapper = new QueryWrapper<UserPo>().lambda().eq(UserPo::getOpenId, openId);
         try {
-            UserPo userPo = userDAO.selectOne(queryWrapper);
+            var userPo = userDAO.selectOne(queryWrapper);
             return userPo != null ? userMapper.toUserEntity(userPo) : null;
         } catch (TooManyResultsException e) {
             log.error("OpenId {} 查询到多个用户", openId);

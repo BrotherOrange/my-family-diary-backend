@@ -13,37 +13,18 @@
  * limitations under the License.
  */
 
-package com.family.diary.domain.entity.wechat;
+package com.family.diary.infrastructure.dao.community.comment;
 
-import com.family.diary.domain.entity.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.family.diary.infrastructure.po.community.comment.CommentLovePo;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 微信账户信息查询实体类
+ * 评论与用户收藏关系DAO接口类
  *
  * @author Richard Zhang
- * @since 2025-07-26
+ * @since 2025-07-19
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class WeChatAccountInfoQueryEntity extends BaseEntity {
-    /**
-     * 小程序登录凭证 code
-     */
-    private String code;
-
-    /**
-     * 加密算法的初始向量
-     */
-    private String iv;
-
-    /**
-     * 包括敏感数据在内的完整用户信息的加密数据
-     */
-    private String encryptedData;
+@Mapper
+public interface CommentLoveDAO extends BaseMapper<CommentLovePo> {
 }

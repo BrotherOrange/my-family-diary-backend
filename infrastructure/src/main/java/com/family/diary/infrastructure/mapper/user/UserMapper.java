@@ -16,13 +16,20 @@
 package com.family.diary.infrastructure.mapper.user;
 
 import com.family.diary.common.mapper.CommonConvertMapper;
+import com.family.diary.common.mapper.user.UserConvertMapper;
 import com.family.diary.domain.entity.user.UserEntity;
 import com.family.diary.infrastructure.po.user.UserPo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = { CommonConvertMapper.class})
+/**
+ * 用户持久化与实体映射接口类
+ *
+ * @author Richard Zhang
+ * @since 2025-07-19
+ */
+@Mapper(componentModel = "spring", uses = { CommonConvertMapper.class, UserConvertMapper.class })
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
@@ -32,9 +39,8 @@ public interface UserMapper {
      * @param userEntity UserEntity
      * @return UserPo
      */
-    @Mapping(source = "status", target = "status", qualifiedByName = "statusToString")
-    @Mapping(target = "createdAt", source = "createdAt")
-    @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(source = "status", target = "status", qualifiedByName = "userStatusToString")
+    @Mapping(target = "flag", source = "flag", qualifiedByName = "userFlagToString")
     UserPo toUserPo(UserEntity userEntity);
 
     /**
@@ -43,8 +49,7 @@ public interface UserMapper {
      * @param userPO UserPo
      * @return UserEntity
      */
-    @Mapping(source = "status", target = "status", qualifiedByName = "stringToStatus")
-    @Mapping(target = "createdAt", source = "createdAt")
-    @Mapping(target = "updatedAt", source = "updatedAt")
+    @Mapping(source = "status", target = "status", qualifiedByName = "userStringToStatus")
+    @Mapping(target = "flag", source = "flag", qualifiedByName = "userStringToFlag")
     UserEntity toUserEntity(UserPo userPO);
 }

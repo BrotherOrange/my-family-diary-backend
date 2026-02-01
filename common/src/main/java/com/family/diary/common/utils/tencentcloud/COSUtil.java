@@ -23,7 +23,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.net.URL;
 import java.util.Date;
 import java.util.regex.Matcher;
 
@@ -55,19 +54,19 @@ public class COSUtil {
                                                   long expirationInSeconds) {
         try {
             // 设置签名URL有效时间
-            Date expiration = new Date(System.currentTimeMillis() + expirationInSeconds * 1000);
+            var expiration = new Date(System.currentTimeMillis() + expirationInSeconds * 1000);
 
             // 生成预签名URL请求
-            GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucketName, objectKey);
+            var req = new GeneratePresignedUrlRequest(bucketName, objectKey);
             // 设置签名过期时间
-            ResponseHeaderOverrides responseHeaders = new ResponseHeaderOverrides();
+            var responseHeaders = new ResponseHeaderOverrides();
             req.setResponseHeaders(responseHeaders);
             req.setExpiration(expiration);
             req.setMethod(GET);
 
             // 获取预签名URL
-            URL url = cosClient.generatePresignedUrl(req, false);
-            String finalUrl = url.toString()
+            var url = cosClient.generatePresignedUrl(req, false);
+            var finalUrl = url.toString()
                     .replaceAll(Matcher.quoteReplacement(defaultHost), Matcher.quoteReplacement(host));
             log.info("Generated presigned URL: {}", finalUrl);
             return finalUrl;

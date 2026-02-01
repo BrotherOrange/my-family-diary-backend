@@ -19,6 +19,7 @@ import com.family.diary.common.utils.common.CommonResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,7 @@ public class HealthController {
      * @return String
      */
     @GetMapping("/check")
-    public CommonResponse<String> healthCheck() {
+    public ResponseEntity<CommonResponse<String>> healthCheck() {
         log.info("健康检查成功");
         return CommonResponse.ok("健康检查成功！");
     }

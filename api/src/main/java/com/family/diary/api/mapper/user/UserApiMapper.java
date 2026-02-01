@@ -19,7 +19,9 @@ import com.family.diary.api.dto.request.user.UserRegisterRequest;
 import com.family.diary.api.dto.response.user.UserLoginResponse;
 import com.family.diary.api.dto.response.user.UserRegisterResponse;
 import com.family.diary.common.enums.status.UserEmotionStatus;
+import com.family.diary.common.enums.status.UserFlagStatus;
 import com.family.diary.common.mapper.CommonConvertMapper;
+import com.family.diary.common.mapper.user.UserConvertMapper;
 import com.family.diary.domain.entity.user.UserEntity;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -33,7 +35,7 @@ import org.mapstruct.factory.Mappers;
  * @author Richard Zhang
  * @since 2025-08-21
  */
-@Mapper(componentModel = "spring", uses = { CommonConvertMapper.class })
+@Mapper(componentModel = "spring", uses = { CommonConvertMapper.class, UserConvertMapper.class })
 public interface UserApiMapper {
     UserApiMapper INSTANCE = Mappers.getMapper(UserApiMapper.class);
 
@@ -51,7 +53,7 @@ public interface UserApiMapper {
      * @param userEntity userEntity
      * @return UserRegisterResponse
      */
-    @Mapping(source = "status", target = "status", qualifiedByName = "statusToStringWithDefault")
+    @Mapping(source = "status", target = "status", qualifiedByName = "userStatusToStringWithDefault")
     @Mapping(source = "birthday", target = "birthday", qualifiedByName = "localDateToString")
     UserRegisterResponse toUserRegisterResponse(UserEntity userEntity);
 
@@ -61,7 +63,7 @@ public interface UserApiMapper {
      * @param userEntity UserEntity
      * @return UserLoginResponse
      */
-    @Mapping(source = "status", target = "status", qualifiedByName = "statusToStringWithDefault")
+    @Mapping(source = "status", target = "status", qualifiedByName = "userStatusToStringWithDefault")
     @Mapping(source = "birthday", target = "birthday", qualifiedByName = "localDateToString")
     UserLoginResponse toUserLoginResponse(UserEntity userEntity);
 
@@ -71,9 +73,10 @@ public interface UserApiMapper {
      * @param entity UserEntity
      */
     @AfterMapping
-    default void setDefaultStatus(@MappingTarget UserEntity entity) {
+    default void setDefault(@MappingTarget UserEntity entity) {
         if (entity.getStatus() == null) {
             entity.setStatus(UserEmotionStatus.PEACE);
         }
+        entity.setFlag(UserFlagStatus.NORMAL);
     }
 }

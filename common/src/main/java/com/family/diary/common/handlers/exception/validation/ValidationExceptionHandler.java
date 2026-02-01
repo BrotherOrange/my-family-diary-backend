@@ -17,9 +17,9 @@ package com.family.diary.common.handlers.exception.validation;
 
 import com.family.diary.common.enums.errors.ResponseErrorCode;
 import com.family.diary.common.handlers.exception.BaseExceptionHandler;
-import com.family.diary.common.models.common.exception.ErrorMap;
 import com.family.diary.common.utils.common.CommonResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -27,6 +27,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 参数校验异常处理类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 @RestControllerAdvice
 public class ValidationExceptionHandler extends BaseExceptionHandler {
 
@@ -42,28 +48,28 @@ public class ValidationExceptionHandler extends BaseExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<Map<String, Object>> handleMethodArgumentNotValid(
+    public ResponseEntity<CommonResponse<Map<String, Object>>> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex) {
         logError(ex);
 
-        Map<String, String> errors = new HashMap<>();
+        var errors = new HashMap<String, String>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage()));
 
-        ErrorMap errorResponse = buildErrorMap("Method Validation failed", errors);
+        var errorResponse = buildErrorMap("Method Validation failed", errors);
         return CommonResponse.fail(ResponseErrorCode.BAD_REQUEST, errorResponse.message() + ": " + errors.values());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public CommonResponse<Map<String, Object>> handleConstraintViolation(
+    public ResponseEntity<CommonResponse<Map<String, Object>>> handleConstraintViolation(
             ConstraintViolationException ex) {
         logError(ex);
 
-        Map<String, String> errors = new HashMap<>();
+        var errors = new HashMap<String, String>();
         ex.getConstraintViolations().forEach(violation ->
                 errors.put(violation.getPropertyPath().toString(), violation.getMessage()));
 
-        ErrorMap errorResponse = buildErrorMap("Constraint Validation failed", errors);
+        var errorResponse = buildErrorMap("Constraint Validation failed", errors);
         return CommonResponse.fail(ResponseErrorCode.BAD_REQUEST, errorResponse.message() + ": " + errors.values());
     }
 }

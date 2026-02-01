@@ -17,7 +17,7 @@ spring:
       version: ${REDIS_VERSION}
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-      username: ${REDIS_USERNAME:default}
+      username: ${REDIS_USERNAME}
       password: ${REDIS_PASSWORD}
       lettuce:
         pool:
@@ -56,3 +56,7 @@ jwt:
   secret-key: ${JWT_SECRET}
   token-header: Authorization
   token-prefix: Bearer
+  token-redis-prefix: jwt-openid
+
+log-trace:
+  trace-header: x-trace-id

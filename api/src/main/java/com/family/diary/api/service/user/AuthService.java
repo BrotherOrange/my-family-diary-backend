@@ -19,6 +19,12 @@ import com.family.diary.common.exceptions.database.InsertException;
 import com.family.diary.common.exceptions.database.QueryException;
 import com.family.diary.domain.entity.user.UserEntity;
 
+/**
+ * 用户认证服务接口类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 public interface AuthService {
     /**
      * 用户注册

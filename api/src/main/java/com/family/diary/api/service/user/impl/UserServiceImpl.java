@@ -26,6 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * 用户功能服务实现类
+ *
+ * @author Richard Zhang
+ * @since 2025-11-22
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -36,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity create(UserEntity user) throws QueryException, InsertException {
-        int result = userRepository.save(user);
+        var result = userRepository.save(user);
         if (result == 0) {
             log.error("创建用户失败: {}", user);
             throw new InsertException("User creation failed");

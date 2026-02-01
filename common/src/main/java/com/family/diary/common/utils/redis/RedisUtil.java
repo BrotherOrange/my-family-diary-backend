@@ -211,8 +211,8 @@ public class RedisUtil {
      * @param requestId 请求ID
      */
     public void releaseLock(String lockKey, String requestId) {
-        List<String> keys = List.of(lockKey);
-        Long result = redisTemplate.execute(releaseLockScript, keys, requestId);
+        var keys = List.of(lockKey);
+        var result = redisTemplate.execute(releaseLockScript, keys, requestId);
         if (result == 0L) {
             log.warn("Redis未能成功释放锁或锁不存在");
         }

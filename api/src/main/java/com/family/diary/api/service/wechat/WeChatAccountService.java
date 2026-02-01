@@ -15,24 +15,21 @@
 
 package com.family.diary.api.service.wechat;
 
-import com.family.diary.api.dto.request.wechat.WeChatAccountInfoQueryRequest;
-import com.family.diary.api.dto.response.wechat.WeChatUserEncryptedDataResponse;
 import com.family.diary.common.exceptions.BaseException;
-import com.family.diary.domain.entity.wechat.WeChatAccountInfoQueryEntity;
 
 /**
- * 微信账户Service
+ * 微信账户服务接口类
  *
  * @author Richard Zhang
  * @since 2025-07-15
  */
 public interface WeChatAccountService {
     /**
-     * 获取微信账户信息
+     * 静默登录 - 通过code获取openId
      *
-     * @param entity 查询实体
-     * @return 微信账户信息返回体
-     * @throws BaseException 查询出现未知错误，进行捕获返回
+     * @param code 小程序登录凭证
+     * @return openId
+     * @throws BaseException 获取失败时抛出异常
      */
-    WeChatUserEncryptedDataResponse getWeChatAccountInfo(WeChatAccountInfoQueryEntity entity) throws BaseException;
+    String getOpenIdByCode(String code) throws BaseException;
 }

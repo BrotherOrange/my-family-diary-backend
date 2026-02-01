@@ -21,30 +21,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 微信账户信息查询请求体
+ * 静默登录请求体 - 仅用code换取openId
  *
  * @author Richard Zhang
- * @since 2025-07-15
+ * @since 2026-02-01
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WeChatAccountInfoQueryRequest {
+public class Code2SessionRequest {
     /**
      * 小程序登录凭证 code
      */
     @NotBlank(message = "code不能为空")
     private String code;
-
-    /**
-     * 加密算法的初始向量
-     */
-    @NotBlank(message = "iv不能为空")
-    private String iv;
-
-    /**
-     * 包括敏感数据在内的完整用户信息的加密数据
-     */
-    @NotBlank(message = "encryptedData不能为空")
-    private String encryptedData;
 }

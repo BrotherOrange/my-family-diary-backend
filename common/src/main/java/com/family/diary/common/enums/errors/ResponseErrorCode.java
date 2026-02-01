@@ -16,6 +16,7 @@
 package com.family.diary.common.enums.errors;
 
 import lombok.Getter;
+import org.apache.http.HttpStatus;
 
 /**
  * 异常错误码枚举类
@@ -25,15 +26,15 @@ import lombok.Getter;
  */
 @Getter
 public enum ResponseErrorCode {
-    BAD_REQUEST(400, "非法请求"),
-    INTERNAL_SERVER_ERROR(500, "服务器内部错误"),
-    NOT_IMPLEMENTED(501, "功能未实现"),
-    BAD_GATEWAY(502, "错误网关"),
-    SERVICE_UNAVAILABLE(503, "服务不可用"),
-    GATEWAY_TIMEOUT(504, "网关超时"),
-    HTTP_VERSION_NOT_SUPPORTED(505, "HTTP版本不支持"),
-    INSUFFICIENT_STORAGE(507, "存储空间不足"),
-    NETWORK_AUTHENTICATION_REQUIRED(511, "需要网络认证");
+    BAD_REQUEST(400, "非法请求", HttpStatus.SC_BAD_REQUEST),
+    INTERNAL_SERVER_ERROR(500, "服务器内部错误", HttpStatus.SC_INTERNAL_SERVER_ERROR),
+    NOT_IMPLEMENTED(501, "功能未实现", HttpStatus.SC_NOT_IMPLEMENTED),
+    BAD_GATEWAY(502, "错误网关", HttpStatus.SC_BAD_GATEWAY),
+    SERVICE_UNAVAILABLE(503, "服务不可用", HttpStatus.SC_SERVICE_UNAVAILABLE),
+    GATEWAY_TIMEOUT(504, "网关超时", HttpStatus.SC_GATEWAY_TIMEOUT),
+    HTTP_VERSION_NOT_SUPPORTED(505, "HTTP版本不支持", HttpStatus.SC_HTTP_VERSION_NOT_SUPPORTED),
+    INSUFFICIENT_STORAGE(507, "存储空间不足", HttpStatus.SC_INSUFFICIENT_STORAGE),
+    ;
 
     /**
      * 错误码
@@ -46,13 +47,19 @@ public enum ResponseErrorCode {
     private final String message;
 
     /**
+     * HttpStatus 错误码
+     */
+    private final int httpStatus;
+
+    /**
      * 构造函数
      *
      * @param code    错误码
      * @param message 错误信息
      */
-    ResponseErrorCode(Integer code, String message) {
+    ResponseErrorCode(Integer code, String message, int httpStatus) {
         this.code = code;
         this.message = message;
+        this.httpStatus = httpStatus;
     }
 }

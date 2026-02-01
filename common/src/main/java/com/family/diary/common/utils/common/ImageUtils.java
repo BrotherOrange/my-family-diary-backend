@@ -22,7 +22,6 @@ import com.family.diary.common.utils.tencentcloud.COSUtil;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
-import com.qcloud.cos.model.PutObjectResult;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 
 /**
@@ -62,14 +60,14 @@ public class ImageUtils {
     public String uploadBase64ImageToCOS(COSClient cosClientWithTempInfo, String base64Image, String cosKey)
             throws BaseException {
         // 将 Base64 转换为 byte 数组
-        byte[] imageBytes = convertBase64ToImageBytes(base64Image);
+        var imageBytes = convertBase64ToImageBytes(base64Image);
 
         // 2. 构造输入流
-        InputStream inputStream = new ByteArrayInputStream(imageBytes);
+        var inputStream = new ByteArrayInputStream(imageBytes);
 
         // 3. 创建 ObjectMetadata 并设置内容类型（根据 Base64 前缀推断）
-        ObjectMetadata metadata = new ObjectMetadata();
-        String contentType = getContentTypeFromBase64(base64Image);
+        var metadata = new ObjectMetadata();
+        var contentType = getContentTypeFromBase64(base64Image);
         metadata.setContentType(contentType); // 自动识别图片类型
         metadata.setContentLength(imageBytes.length); // 设置精确长度（避免使用 inputStream.available()）
 
@@ -83,7 +81,7 @@ public class ImageUtils {
 
         // 5. 上传到 COS
         try {
-            PutObjectResult result = cosClientWithTempInfo.putObject(putObjectRequest);
+            var result = cosClientWithTempInfo.putObject(putObjectRequest);
             if (result != null) {
                 // 上传成功后返回文件 URL
                 return cosUtil.generatePresignedUrlWithOutHost(cosClientWithTempInfo, bucket, cosKey,
@@ -110,7 +108,7 @@ public class ImageUtils {
      * @throws BaseException 如果转换或写入文件失败，抛出自定义异常
      */
     public void convertBase64ToImageFile(String base64Image, String outputPath) throws BaseException {
-        byte[] imageBytes = convertBase64ToImageBytes(base64Image);
+        var imageBytes = convertBase64ToImageBytes(base64Image);
         // 写入文件
         try (FileOutputStream fos = new FileOutputStream(outputPath)) {
             fos.write(imageBytes);
@@ -127,7 +125,7 @@ public class ImageUtils {
      */
     public byte[] convertBase64ToImageBytes(String base64Image) {
         // 提取Base64数据部分，去除前缀
-        String base64Data = extractBase64Data(base64Image);
+        var base64Data = extractBase64Data(base64Image);
 
         // 解码Base64数据
         return Base64.getDecoder().decode(base64Data);
@@ -158,7 +156,7 @@ public class ImageUtils {
      * @return 纯Base64编码的数据
      */
     public String extractBase64Data(String base64String) {
-        int commaIndex = base64String.indexOf(',');
+        var commaIndex = base64String.indexOf(',');
         if (commaIndex != -1 && commaIndex < base64String.length() - 1) {
             return base64String.substring(commaIndex + 1);
         }

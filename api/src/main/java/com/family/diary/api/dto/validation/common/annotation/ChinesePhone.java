@@ -36,7 +36,24 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ChinesePhone {
+    /**
+     * 提示信息
+     *
+     * @return 提示信息内容
+     */
     String message() default "手机号格式不正确";
+
+    /**
+     * 指定校验所属的分组（JSR-380 分组校验机制）。
+     *
+     * @return 校验分组类数组
+     */
     Class<?>[] groups() default {};
+
+    /**
+     * 与注解关联的元数据负载（Payload），可用于传递自定义元信息。
+     *
+     * @return Payload 类型数组
+     */
     Class<? extends Payload>[] payload() default {};
 }

@@ -23,7 +23,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * RestTemplate配置类
@@ -40,10 +39,10 @@ public class RestTemplateConfig {
      */
     @Bean(name = "restTemplate")
     public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
+        var restTemplate = new RestTemplate();
 
         // 获取现有的消息转换器
-        List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        var messageConverters = restTemplate.getMessageConverters();
 
         // 找到MappingJackson2HttpMessageConverter并添加text/plain支持
         for (HttpMessageConverter<?> converter : messageConverters) {

@@ -26,6 +26,12 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
+/**
+ * 用户持久化对象
+ *
+ * @author Richard Zhang
+ * @since 2025-07-19
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
@@ -38,11 +44,6 @@ public class UserPo extends BasePo {
      * 微信账户OpenID
      */
     private String openId;
-
-    /**
-     * 家庭ID
-     */
-    private String familyId;
 
     /**
      * 用户名
@@ -73,4 +74,9 @@ public class UserPo extends BasePo {
      * 用户情绪状态
      */
     private String status;
+
+    /**
+     * 用户状态
+     */
+    private String flag;
 }
