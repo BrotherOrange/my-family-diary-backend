@@ -16,14 +16,9 @@
 package com.family.diary.api.service.wechat.impl;
 
 import com.family.diary.api.dto.response.wechat.WeChatSessionResponse;
-import com.family.diary.api.dto.response.wechat.WeChatUserEncryptedDataResponse;
 import com.family.diary.api.service.wechat.WeChatAccountService;
 import com.family.diary.common.enums.errors.ExceptionErrorCode;
 import com.family.diary.common.exceptions.BaseException;
-import com.family.diary.common.factories.common.GsonFactory;
-import com.family.diary.common.utils.wechat.WechatDataDecoder;
-import com.family.diary.domain.entity.wechat.WeChatAccountInfoQueryEntity;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +43,7 @@ import java.util.Collections;
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WeChatAccountServiceImpl implements WeChatAccountService {
-    private final WechatDataDecoder wechatDataDecoder;
-
     private final RestTemplate restTemplate;
-
-    private final Gson gson = GsonFactory.createGson();
 
     @Value("${wechat.app-id}")
     private String appId;
@@ -64,12 +55,8 @@ public class WeChatAccountServiceImpl implements WeChatAccountService {
     private String codeToSessionUrl;
 
     @Override
-    public WeChatUserEncryptedDataResponse getWeChatAccountInfo(WeChatAccountInfoQueryEntity entity)
-            throws BaseException {
-        log.info("获取微信用户信息，request: {}", gson.toJson(entity));
-        var code = entity.getCode();
-        var iv = entity.getIv();
-        var encryptedData = entity.getEncryptedData();
+    public String getOpenIdByCode(String code) throws BaseException {
+        log.info("静默登录，code: {}", code);
         try {
             var requestUrl = codeToSessionUrl + "?appid=" + appId +
                     "&secret=" + appSecret +
@@ -82,14 +69,12 @@ public class WeChatAccountServiceImpl implements WeChatAccountService {
             var httpEntity = new HttpEntity<>(headers);
             WeChatSessionResponse sessionResponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
                     WeChatSessionResponse.class).getBody();
-            log.info("获取微信用户会话信息成功，sessionResponse: {}", gson.toJson(sessionResponse));
+            log.info("静默登录成功，openId: {}", sessionResponse != null ? sessionResponse.getOpenId() : null);
             assert sessionResponse != null;
-            var decryptedData = wechatDataDecoder.decryptData(encryptedData, sessionResponse.getSessionKey(), iv);
-            log.info("获取解密的微信用户信息成功，decryptedData: {}", gson.toJson(decryptedData));
-            return gson.fromJson(decryptedData, WeChatUserEncryptedDataResponse.class);
+            return sessionResponse.getOpenId();
         } catch (Exception e) {
-            log.error("获取微信用户信息失败，code: {}, 错误信息: {}", code, e.getMessage());
-            throw new BaseException(ExceptionErrorCode.COMMON_ERROR, "获取微信用户信息失败: " + e.getMessage());
+            log.error("静默登录失败，code: {}, 错误信息: {}", code, e.getMessage());
+            throw new BaseException(ExceptionErrorCode.COMMON_ERROR, "获取openId失败: " + e.getMessage());
         }
     }
 }

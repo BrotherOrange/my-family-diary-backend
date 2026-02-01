@@ -13,37 +13,24 @@
  * limitations under the License.
  */
 
-package com.family.diary.domain.entity.wechat;
+package com.family.diary.api.dto.response.wechat;
 
-import com.family.diary.domain.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * 微信账户信息查询实体类
+ * 静默登录响应体
  *
  * @author Richard Zhang
- * @since 2025-07-26
+ * @since 2026-02-01
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WeChatAccountInfoQueryEntity extends BaseEntity {
+public class Code2SessionResponse {
     /**
-     * 小程序登录凭证 code
+     * 用户唯一标识 OpenID
      */
-    private String code;
-
-    /**
-     * 加密算法的初始向量
-     */
-    private String iv;
-
-    /**
-     * 包括敏感数据在内的完整用户信息的加密数据
-     */
-    private String encryptedData;
+    private String openId;
 }

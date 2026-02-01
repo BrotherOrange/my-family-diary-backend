@@ -25,6 +25,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,7 +57,7 @@ public class COSController {
      * @return 头像临时链接
      */
     @PostMapping("/avatar/upload")
-    public CommonResponse<String> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
+    public ResponseEntity<CommonResponse<String>> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
         log.info("开始上传头像");
         var entity = cosAvatarUploadMapper.toCOSAvatarUploadEntity(request);
         try {
@@ -75,7 +76,7 @@ public class COSController {
      * @return 头像临时链接
      */
     @GetMapping("/avatar/url")
-    public CommonResponse<String> getAvatarUrl(
+    public ResponseEntity<CommonResponse<String>> getAvatarUrl(
             @RequestParam @Valid @NotEmpty(message = "openid不能为空") String openId) {
         log.info("开始获取头像URL");
         var tempAvatarUrl = cosService.getAvatarUrl(openId);

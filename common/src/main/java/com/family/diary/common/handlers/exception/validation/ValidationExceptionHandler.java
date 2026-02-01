@@ -19,6 +19,7 @@ import com.family.diary.common.enums.errors.ResponseErrorCode;
 import com.family.diary.common.handlers.exception.BaseExceptionHandler;
 import com.family.diary.common.utils.common.CommonResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -47,7 +48,7 @@ public class ValidationExceptionHandler extends BaseExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<Map<String, Object>> handleMethodArgumentNotValid(
+    public ResponseEntity<CommonResponse<Map<String, Object>>> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex) {
         logError(ex);
 
@@ -60,7 +61,7 @@ public class ValidationExceptionHandler extends BaseExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public CommonResponse<Map<String, Object>> handleConstraintViolation(
+    public ResponseEntity<CommonResponse<Map<String, Object>>> handleConstraintViolation(
             ConstraintViolationException ex) {
         logError(ex);
 

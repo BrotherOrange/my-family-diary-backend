@@ -15,9 +15,8 @@
 
 package com.family.diary.api.controller.wechat;
 
-import com.family.diary.api.dto.request.wechat.WeChatAccountInfoQueryRequest;
-import com.family.diary.api.dto.response.wechat.WeChatUserEncryptedDataResponse;
-import com.family.diary.api.mapper.wechat.WeChatAccountInfoQueryMapper;
+import com.family.diary.api.dto.request.wechat.Code2SessionRequest;
+import com.family.diary.api.dto.response.wechat.Code2SessionResponse;
 import com.family.diary.api.service.wechat.WeChatAccountService;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.CommonResponse;
@@ -25,6 +24,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,24 +45,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class WeChatAccountController {
     private final WeChatAccountService weChatAccountService;
 
-    private final WeChatAccountInfoQueryMapper weChatAccountInfoQueryMapper;
-
     /**
-     * 获取微信用户信息
+     * 静默登录 - 仅用code换取openId
      *
      * @param request request
-     * @return WeChatUserEncryptedDataResponse
+     * @return Code2SessionResponse
      */
-    @PostMapping("/info")
-    public CommonResponse<WeChatUserEncryptedDataResponse> getWeChatAccountInfo(
-            @RequestBody @Valid WeChatAccountInfoQueryRequest request) {
-        var entity = weChatAccountInfoQueryMapper.toWeChatAccountInfoQueryEntity(request);
+    @PostMapping("/code2session")
+    public ResponseEntity<CommonResponse<Code2SessionResponse>> code2Session(
+            @RequestBody @Valid Code2SessionRequest request) {
         try {
-            var response = weChatAccountService.getWeChatAccountInfo(entity);
-            log.info("获取微信用户信息成功，用户ID: {}", response.getOpenId());
-            return CommonResponse.ok(response);
+            String openId = weChatAccountService.getOpenIdByCode(request.getCode());
+            log.info("静默登录成功，openId: {}", openId);
+            return CommonResponse.ok(new Code2SessionResponse(openId));
         } catch (BaseException e) {
-            log.error("获取微信用户信息失败，错误信息: {}", e.getMessage());
+            log.error("静默登录失败，错误信息: {}", e.getMessage());
             return CommonResponse.fail(e.getMessage());
         }
     }

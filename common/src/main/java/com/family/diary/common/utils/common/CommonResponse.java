@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.ResponseEntity;
 
 /**
  * 统一返回体格式
@@ -63,7 +64,7 @@ public class CommonResponse<T> {
      *
      * @return CommonResponse<T>
      */
-    public static <T> CommonResponse<T> ok(T data) {
+    public static <T> ResponseEntity<CommonResponse<T>> ok(T data) {
         return buildCommonResponse(200, true, "操作成功", null, data);
     }
 
@@ -73,7 +74,7 @@ public class CommonResponse<T> {
      * @param errors errors
      * @return CommonResponse<T>
      */
-    public static <T> CommonResponse<T> fail(String errors) {
+    public static <T> ResponseEntity<CommonResponse<T>> fail(String errors) {
         return fail(ResponseErrorCode.INTERNAL_SERVER_ERROR, errors);
     }
 
@@ -84,7 +85,7 @@ public class CommonResponse<T> {
      * @param message 错误消息
      * @return CommonResponse<T>
      */
-    public static <T> CommonResponse<T> fail(String errors, String message) {
+    public static <T> ResponseEntity<CommonResponse<T>> fail(String errors, String message) {
         return fail(ResponseErrorCode.INTERNAL_SERVER_ERROR, message, errors);
     }
 
@@ -95,7 +96,7 @@ public class CommonResponse<T> {
      * @param errors    errors
      * @return CommonResponse<T>
      */
-    public static <T> CommonResponse<T> fail(ResponseErrorCode errorCode, String errors) {
+    public static <T> ResponseEntity<CommonResponse<T>> fail(ResponseErrorCode errorCode, String errors) {
         return buildCommonResponse(errorCode.getCode(), false, errorCode.getMessage(), errors, null);
     }
 
@@ -107,13 +108,13 @@ public class CommonResponse<T> {
      * @param errors    errors
      * @return CommonResponse<T>
      */
-    public static <T> CommonResponse<T> fail(
+    public static <T> ResponseEntity<CommonResponse<T>> fail(
             ResponseErrorCode errorCode, String message, String errors) {
         return buildCommonResponse(errorCode.getCode(), false, message, errors, null);
     }
 
-    private static <T> CommonResponse<T> buildCommonResponse(
+    private static <T> ResponseEntity<CommonResponse<T>> buildCommonResponse(
             int code, Boolean success, String message, String errors, T data) {
-        return new CommonResponse<>(code, success, message, errors, data);
+        return ResponseEntity.status(code).body(new CommonResponse<>(code, success, message, errors, data));
     }
 }

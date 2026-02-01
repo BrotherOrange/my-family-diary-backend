@@ -32,6 +32,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +66,8 @@ public class AuthController {
      * @return CommonResponse<UserRegisterResponse>
      */
     @PostMapping("/register")
-    public CommonResponse<UserRegisterResponse> register(@RequestBody @Valid UserRegisterRequest userRegisterRequest) {
+    public ResponseEntity<CommonResponse<UserRegisterResponse>> register(
+            @RequestBody @Valid UserRegisterRequest userRegisterRequest) {
         log.info("用户发起注册请求: {}", gson.toJson(userRegisterRequest));
         var userRequestEntity = userApiMapper.toUserEntity(userRegisterRequest);
         try {
@@ -84,7 +86,8 @@ public class AuthController {
      * @return CommonResponse<UserLoginResponse>
      */
     @PostMapping("/login")
-    public CommonResponse<UserLoginResponse> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+    public ResponseEntity<CommonResponse<UserLoginResponse>> login(
+            @RequestBody @Valid UserLoginRequest userLoginRequest) {
         log.info("用户发起登录请求: {}", gson.toJson(userLoginRequest));
         try {
             var user = authService.login(userLoginRequest.getOpenId(), userLoginRequest.getPassword());
