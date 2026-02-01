@@ -17,6 +17,7 @@ package com.family.diary.api.controller.user;
 
 import com.family.diary.api.dto.response.user.UserCheckResponse;
 import com.family.diary.api.mapper.user.UserApiMapper;
+import com.family.diary.api.service.tencentcloud.COSService;
 import com.family.diary.api.service.user.UserService;
 import com.family.diary.common.utils.common.CommonResponse;
 import jakarta.validation.constraints.NotBlank;
@@ -45,6 +46,8 @@ public class UserController {
     private final UserService userService;
 
     private final UserApiMapper userApiMapper;
+
+    private final COSService cosService;
 
     /**
      * 刷新用户token
@@ -76,6 +79,10 @@ public class UserController {
                     .build());
         }
         log.info("OpenID为 {} 的用户已注册，用户名: {}", openId, user.getUsername());
-        return CommonResponse.ok(userApiMapper.toUserCheckResponse(user));
+        var response = userApiMapper.toUserCheckResponse(user);
+        // 获取头像URL
+        var avatarUrl = cosService.getAvatarUrl(openId);
+        response.setAvatarUrl(avatarUrl);
+        return CommonResponse.ok(response);
     }
 }

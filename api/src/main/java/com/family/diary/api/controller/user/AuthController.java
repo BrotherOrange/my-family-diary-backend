@@ -20,6 +20,7 @@ import com.family.diary.api.dto.request.user.UserRegisterRequest;
 import com.family.diary.api.dto.response.user.UserLoginResponse;
 import com.family.diary.api.dto.response.user.UserRegisterResponse;
 import com.family.diary.api.mapper.user.UserApiMapper;
+import com.family.diary.api.service.tencentcloud.COSService;
 import com.family.diary.api.service.user.AuthService;
 import com.family.diary.common.enums.errors.ResponseErrorCode;
 import com.family.diary.common.exceptions.database.InsertException;
@@ -59,6 +60,8 @@ public class AuthController {
 
     private final UserApiMapper userApiMapper;
 
+    private final COSService cosService;
+
     /**
      * 用户注册接口
      *
@@ -94,6 +97,10 @@ public class AuthController {
             var userLoginResponse = userApiMapper.toUserLoginResponse(user);
             String token = jwtUtil.generateToken(user.getOpenId());
             userLoginResponse.setToken(token);
+            userLoginResponse.setOpenId(user.getOpenId());
+            // 获取头像URL
+            var avatarUrl = cosService.getAvatarUrl(user.getOpenId());
+            userLoginResponse.setAvatarUrl(avatarUrl);
             return CommonResponse.ok(userLoginResponse);
         } catch (QueryException | InsertException e) {
             log.error("用户登录失败");

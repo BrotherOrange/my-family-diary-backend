@@ -36,6 +36,11 @@ import lombok.experimental.Accessors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserLoginResponse {
     /**
+     * 用户OpenID
+     */
+    private String openId;
+
+    /**
      * 用户名
      */
     private String username;
@@ -59,6 +64,11 @@ public class UserLoginResponse {
      * 个人状态
      */
     private String status;
+
+    /**
+     * 头像链接
+     */
+    private String avatarUrl;
 
     /**
      * JWT Token
