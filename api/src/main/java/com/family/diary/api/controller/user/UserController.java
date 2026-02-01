@@ -15,6 +15,8 @@
 
 package com.family.diary.api.controller.user;
 
+import com.family.diary.api.dto.response.user.UserCheckResponse;
+import com.family.diary.api.mapper.user.UserApiMapper;
 import com.family.diary.api.service.user.UserService;
 import com.family.diary.common.utils.common.CommonResponse;
 import jakarta.validation.constraints.NotBlank;
@@ -42,6 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
+    private final UserApiMapper userApiMapper;
+
     /**
      * 刷新用户token
      *
@@ -52,5 +56,26 @@ public class UserController {
     public ResponseEntity<CommonResponse<String>> refreshToken(
             @RequestParam("openId") @NotBlank(message = "Open ID不能为空") String openId) {
         return CommonResponse.ok(userService.refreshToken(openId));
+    }
+
+    /**
+     * 检查用户是否已注册
+     *
+     * @param openId 微信openId
+     * @return CommonResponse<UserCheckResponse>
+     */
+    @GetMapping("/exists")
+    public ResponseEntity<CommonResponse<UserCheckResponse>> checkUserExists(
+            @RequestParam("openId") @NotBlank(message = "Open ID不能为空") String openId) {
+        log.info("检查用户注册状态, openId: {}", openId);
+        var user = userService.findByOpenId(openId);
+        if (user == null) {
+            log.info("OpenID为 {} 的用户未注册", openId);
+            return CommonResponse.ok(UserCheckResponse.builder()
+                    .registered(false)
+                    .build());
+        }
+        log.info("OpenID为 {} 的用户已注册，用户名: {}", openId, user.getUsername());
+        return CommonResponse.ok(userApiMapper.toUserCheckResponse(user));
     }
 }
