@@ -55,12 +55,16 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy JAR to Server via SCP
+      - name: Deploy JAR to Server via rsync
         run: |
-          echo "Uploading JAR to server..."
-          scp -v -P ${{ secrets.SERVER_PORT }} -i ~/.ssh/deploy_key \
-            api/target/api-0.0.1-SNAPSHOT.jar \
+          JAR_FILE="api/target/api-0.0.1-SNAPSHOT.jar"
+          JAR_SIZE=$(du -h "$JAR_FILE" | cut -f1)
+          echo "Uploading $JAR_FILE ($JAR_SIZE) to server..."
+          rsync -avz --progress \
+            -e "ssh -p ${{ secrets.SERVER_PORT }} -i ~/.ssh/deploy_key" \
+            "$JAR_FILE" \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/lib/jenkins/workspace/my-family-diary-backend/
+          echo "Upload complete!"
 
       - name: Restart Application Service
         run: |
