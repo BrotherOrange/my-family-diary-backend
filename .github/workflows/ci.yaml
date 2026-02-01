@@ -1,4 +1,4 @@
-name: CI and Deploy to Jenkins
+name: CI and Deploy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
 
       - name: Build with Maven
         run: |
@@ -46,19 +46,30 @@ jobs:
             -DJWT_SECRET="${{ secrets.JWT_SECRET }}"
 
       - name: Check api/target directory
-        run: |
-          ls -la api/target/
+        run: ls -la api/target/
 
-      - name: Upload artifact to Jenkins
-        uses: actions/upload-artifact@v4
+      - name: Deploy JAR to Server via SSH
+        uses: appleboy/scp-action@v0.1.7
         with:
-          name: spring-boot-app.jar
-          path: api/target/*.jar
-          if-no-files-found: error
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: "api/target/api-0.0.1-SNAPSHOT.jar"
+          target: "/var/lib/jenkins/workspace/my-family-diary-backend/"
+          strip_components: 2
 
-      - name: Trigger Jenkins Job with curl
-        run: |
-          curl --location --request POST 'http://1.14.202.237:8087/job/my-family-diary-backend/build' \
-            --header 'Authorization: Basic ${{ secrets.JENKINS_BASIC_AUTH }}' \
-            --header 'Content-Type: application/x-www-form-urlencoded' \
-            --data-urlencode 'json={"parameter":[{"name":"ARTIFACT_NAME","value":"spring-boot-app.jar"}]}'
+      - name: Restart Application Service
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            cd /var/lib/jenkins/workspace/my-family-diary-backend/
+            echo "Restarting myapp service..."
+            systemctl daemon-reload
+            systemctl restart myapp
+            sleep 5
+            systemctl status myapp --no-pager
