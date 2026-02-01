@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v1/register").permitAll() // 注册放行
                         .requestMatchers("/v1/login").permitAll() // 登录放行
+                        .requestMatchers("/v1/user/exists").permitAll() // 用户存在检查放行
                         .requestMatchers("/v1/wechat/account/info").permitAll() // 微信登录放行
                         .requestMatchers("/v1/wechat/account/code2session").permitAll() // 微信静默登录放行
                         .anyRequest().authenticated() // 其他请求需要认证

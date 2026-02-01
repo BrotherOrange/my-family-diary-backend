@@ -100,4 +100,5 @@ public class AuthController {
             return CommonResponse.fail(ResponseErrorCode.BAD_REQUEST, e.getMessage());
         }
     }
+
 }

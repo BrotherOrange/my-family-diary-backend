@@ -16,6 +16,7 @@
 package com.family.diary.api.mapper.user;
 
 import com.family.diary.api.dto.request.user.UserRegisterRequest;
+import com.family.diary.api.dto.response.user.UserCheckResponse;
 import com.family.diary.api.dto.response.user.UserLoginResponse;
 import com.family.diary.api.dto.response.user.UserRegisterResponse;
 import com.family.diary.common.enums.status.UserEmotionStatus;
@@ -66,6 +67,15 @@ public interface UserApiMapper {
     @Mapping(source = "status", target = "status", qualifiedByName = "userStatusToStringWithDefault")
     @Mapping(source = "birthday", target = "birthday", qualifiedByName = "localDateToString")
     UserLoginResponse toUserLoginResponse(UserEntity userEntity);
+
+    /**
+     * UserEntity -> UserCheckResponse
+     *
+     * @param userEntity UserEntity
+     * @return UserCheckResponse
+     */
+    @Mapping(target = "registered", constant = "true")
+    UserCheckResponse toUserCheckResponse(UserEntity userEntity);
 
     /**
      * 后处理：确保 UserEntity 存在默认值
