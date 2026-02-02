@@ -15,126 +15,44 @@
 
 package com.family.diary.common.config.tencentcloud;
 
-import com.family.diary.common.constants.tencentcloud.COSConstants;
-import com.family.diary.common.exceptions.tencentcloud.InvalidCOSTempInfoException;
-import com.family.diary.common.models.tencentcloud.COSTempInfo;
+import com.family.diary.common.factory.COSClientFactory;
 import com.qcloud.cos.COSClient;
-import com.qcloud.cos.ClientConfig;
-import com.qcloud.cos.auth.BasicCOSCredentials;
-import com.qcloud.cos.auth.BasicSessionCredentials;
-import com.qcloud.cos.region.Region;
-import com.qcloud.cos.utils.Jackson;
-import com.tencent.cloud.CosStsClient;
-import com.tencent.cloud.Policy;
-import com.tencent.cloud.Statement;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.TreeMap;
-
 /**
- * 腾讯云COS服务客户端配置类
+ * 腾讯云COS服务配置类
+ * 负责定义COS相关的Spring Bean
  *
  * @author Richard Zhang
  * @since 2025-07-14
  */
 @Configuration
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class COSConfig {
-    @Value("${tencent-cloud.app-id}")
-    private String appId;
-
-    @Value("${tencent-cloud.api-secret-id}")
-    private String apiSecretId;
-
-    @Value("${tencent-cloud.api-secret-key}")
-    private String apiSecretKey;
-
-    @Value("${tencent-cloud.cos.region}")
-    private String cosRegion;
-
-    @Value("${tencent-cloud.cos.bucket}")
-    private String bucket;
+    private final COSClientFactory cosClientFactory;
 
     /**
-     * 默认永久token的COSClient（Spring Bean，共享实例）
+     * 永久密钥的COSClient Bean（共享实例）
+     * 注意：此Bean不应在使用后被shutdown，适用于长期持有的场景
      *
      * @return COSClient
      */
     @Bean(name = "cosClient")
     public COSClient cosClient() {
-        return createCosClient();
+        return cosClientFactory.createPermanentClient();
     }
 
     /**
-     * 创建永久密钥的COSClient实例（工厂方法，每次调用创建新实例）
-     * 用于生成预签名URL等需要独立客户端的场景
-     *
-     * @return COSClient 新的客户端实例
-     */
-    public COSClient createCosClient() {
-        // 1 初始化用户身份信息(secretId, secretKey)
-        var cred = new BasicCOSCredentials(apiSecretId, apiSecretKey);
-        // 2 设置 bucket 的地域
-        var region = new Region(cosRegion);
-        var clientConfig = new ClientConfig(region);
-        // 3 生成 cos 客户端
-        return new COSClient(cred, clientConfig);
-    }
-
-    /**
-     * 使用临时token的COSClient
+     * 临时密钥的COSClient Bean（共享实例）
+     * 注意：临时凭证有效期为2小时，适用于需要临时权限的场景
      *
      * @return COSClient
      */
+    @Bean(name = "cosClientWithTempInfo")
     public COSClient cosClientWithTempInfo() {
-        var cosTempInfo = getCosTempInfo();
-        var cred = new BasicSessionCredentials(cosTempInfo.cosTempSecretId(), cosTempInfo.cosTempSecretKey(),
-                cosTempInfo.cosTempToken());
-        // 2 设置 bucket 的地域
-        var region = new Region("ap-guangzhou");
-        var clientConfig = new ClientConfig(region);
-        // 3 生成 cos 客户端
-        return new COSClient(cred, clientConfig);
-    }
-
-    private COSTempInfo getCosTempInfo() {
-        var config = new TreeMap<String, Object>();
-        try {
-            // 替换为您的云 api 密钥 SecretId
-            config.put("secretId", apiSecretId);
-            config.put("secretKey", apiSecretKey);
-
-            // 初始化 policy
-            var policy = new Policy();
-            config.put("durationSeconds", COSConstants.TEMP_TOKEN_EXPIRE_TIME);
-
-            config.put("bucket", bucket);
-            config.put("region", cosRegion);
-
-            // 开始构建一条 statement
-            var statement = new Statement();
-
-            statement.setEffect("allow");
-            statement.addActions(new String[] {
-                    "cos:*"
-            });
-
-            statement.addResources(new String[] {
-                    String.format("qcs::cos:%s:uid/%s:%s/*", cosRegion, appId, bucket),
-                    String.format("qcs::ci:%s:uid/%s:bucket/%s/*", cosRegion, appId, bucket)
-            });
-
-            // 把 statement 添加到 policy
-            policy.addStatement(statement);
-            // 将 Policy 转化成 String
-            config.put("policy", Jackson.toJsonPrettyString(policy));
-
-            var response = CosStsClient.getCredential(config);
-            return new COSTempInfo(response.credentials.tmpSecretId, response.credentials.tmpSecretKey,
-                    response.credentials.sessionToken);
-        } catch (Exception e) {
-            throw new InvalidCOSTempInfoException("无法获取到COS服务临时信息！");
-        }
+        return cosClientFactory.createTemporaryClient();
     }
 }

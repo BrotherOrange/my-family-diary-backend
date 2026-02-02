@@ -16,16 +16,14 @@
 package com.family.diary.api.service.tencentcloud.impl;
 
 import com.family.diary.api.service.tencentcloud.COSService;
-import com.family.diary.common.config.tencentcloud.COSConfig;
 import com.family.diary.common.constants.common.ImageConstants;
 import com.family.diary.common.constants.tencentcloud.COSConstants;
 import com.family.diary.common.exceptions.BaseException;
+import com.family.diary.common.factory.COSClientFactory;
 import com.family.diary.common.utils.common.ImageUtils;
 import com.family.diary.common.utils.redis.RedisUtil;
 import com.family.diary.common.utils.tencentcloud.COSUtil;
 import com.family.diary.domain.entity.tencentcloud.cos.COSAvatarUploadEntity;
-import com.qcloud.cos.COSClient;
-import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -47,27 +45,25 @@ import java.util.concurrent.TimeUnit;
 public class COSServiceImpl implements COSService {
     private final COSUtil cosUtil;
 
-    private final COSConfig cosConfig;
+    private final COSClientFactory cosClientFactory;
 
     private final RedisUtil redisUtil;
 
     private final ImageUtils imageUtils;
-
-    @Resource
-    private COSClient cosClientWithTempInfo;
 
     @Value("${tencent-cloud.cos.bucket}")
     private String bucket;
 
     @Override
     public String uploadAvatarToCOS(COSAvatarUploadEntity entity) throws BaseException {
-        cosClientWithTempInfo = cosConfig.cosClientWithTempInfo();
         var openid = entity.getOpenId();
         var base64Image = entity.getBase64Image();
         var fileFormat = imageUtils.getContentTypeFromBase64(base64Image)
                 .replace(ImageConstants.IMAGE_PREFIX, Strings.EMPTY);
         var filePath = buildFilePathWithId(openid, COSConstants.AVATARS_DIR, fileFormat);
-        var imageUrl = imageUtils.uploadBase64ImageToCOS(cosClientWithTempInfo, base64Image, filePath);
+        // 上传使用临时密钥客户端，操作是即时的
+        var tempClient = cosClientFactory.createTemporaryClient();
+        var imageUrl = imageUtils.uploadBase64ImageToCOS(tempClient, base64Image, filePath);
         if (imageUrl == null || imageUrl.isEmpty()) {
             log.error("上传头像到 COS 失败，文件存储路径：{}", filePath);
             return "";
@@ -91,9 +87,8 @@ public class COSServiceImpl implements COSService {
         log.info("Redis 缓存未命中，生成新的头像链接，openid:{}", openid);
         var filePath = buildFilePathWithId(openid, COSConstants.AVATARS_DIR, ImageConstants.IMAGE_PNG_FORMAT);
         // 使用永久密钥客户端生成预签名URL，避免临时Token过期导致URL失效
-        // 临时密钥的Token有效期只有2小时，而URL签名可能需要更长有效期
-        var permanentCosClient = cosConfig.createCosClient();
-        var avatarUrl = cosUtil.generatePresignedUrlWithOutHost(permanentCosClient, bucket, filePath,
+        var permanentClient = cosClientFactory.createPermanentClient();
+        var avatarUrl = cosUtil.generatePresignedUrlWithOutHost(permanentClient, bucket, filePath,
                 ImageConstants.MAX_VALID_TIME);
         if (!avatarUrl.isBlank()) {
             saveAvatarCache(openid, avatarUrl);
