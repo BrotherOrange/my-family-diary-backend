@@ -19,7 +19,7 @@ import com.family.diary.api.service.tencentcloud.COSService;
 import com.family.diary.common.constants.common.ImageConstants;
 import com.family.diary.common.constants.tencentcloud.COSConstants;
 import com.family.diary.common.exceptions.BaseException;
-import com.family.diary.common.factory.COSClientFactory;
+import com.family.diary.common.factory.tencentcloud.COSClientFactory;
 import com.family.diary.common.utils.common.ImageUtils;
 import com.family.diary.common.utils.redis.RedisUtil;
 import com.family.diary.common.utils.tencentcloud.COSUtil;

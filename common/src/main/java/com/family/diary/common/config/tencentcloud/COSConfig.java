@@ -15,7 +15,7 @@
 
 package com.family.diary.common.config.tencentcloud;
 
-import com.family.diary.common.factory.COSClientFactory;
+import com.family.diary.common.factory.tencentcloud.COSClientFactory;
 import com.qcloud.cos.COSClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

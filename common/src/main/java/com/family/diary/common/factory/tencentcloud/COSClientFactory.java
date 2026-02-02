@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.family.diary.common.factory;
+package com.family.diary.common.factory.tencentcloud;
 
 import com.family.diary.common.constants.tencentcloud.COSConstants;
 import com.family.diary.common.exceptions.tencentcloud.InvalidCOSTempInfoException;
