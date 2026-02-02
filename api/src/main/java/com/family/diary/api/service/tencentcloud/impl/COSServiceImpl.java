@@ -90,7 +90,9 @@ public class COSServiceImpl implements COSService {
         // 缓存未命中，生成新链接并缓存
         log.info("Redis 缓存未命中，生成新的头像链接，openid:{}", openid);
         var filePath = buildFilePathWithId(openid, COSConstants.AVATARS_DIR, ImageConstants.IMAGE_PNG_FORMAT);
-        var avatarUrl = cosUtil.generatePresignedUrlWithOutHost(cosClientWithTempInfo, bucket, filePath,
+        // 每次生成预签名URL时获取新的临时密钥客户端，避免密钥过期或客户端被关闭的问题
+        var tempCosClient = cosConfig.cosClientWithTempInfo();
+        var avatarUrl = cosUtil.generatePresignedUrlWithOutHost(tempCosClient, bucket, filePath,
                 ImageConstants.MAX_VALID_TIME);
         if (!avatarUrl.isBlank()) {
             saveAvatarCache(openid, avatarUrl);
