@@ -90,9 +90,10 @@ public class COSServiceImpl implements COSService {
         // 缓存未命中，生成新链接并缓存
         log.info("Redis 缓存未命中，生成新的头像链接，openid:{}", openid);
         var filePath = buildFilePathWithId(openid, COSConstants.AVATARS_DIR, ImageConstants.IMAGE_PNG_FORMAT);
-        // 每次生成预签名URL时获取新的临时密钥客户端，避免密钥过期或客户端被关闭的问题
-        var tempCosClient = cosConfig.cosClientWithTempInfo();
-        var avatarUrl = cosUtil.generatePresignedUrlWithOutHost(tempCosClient, bucket, filePath,
+        // 使用永久密钥客户端生成预签名URL，避免临时Token过期导致URL失效
+        // 临时密钥的Token有效期只有2小时，而URL签名可能需要更长有效期
+        var permanentCosClient = cosConfig.createCosClient();
+        var avatarUrl = cosUtil.generatePresignedUrlWithOutHost(permanentCosClient, bucket, filePath,
                 ImageConstants.MAX_VALID_TIME);
         if (!avatarUrl.isBlank()) {
             saveAvatarCache(openid, avatarUrl);

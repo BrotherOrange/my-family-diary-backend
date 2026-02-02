@@ -57,12 +57,22 @@ public class COSConfig {
     private String bucket;
 
     /**
-     * 默认永久token的COSClient
+     * 默认永久token的COSClient（Spring Bean，共享实例）
      *
      * @return COSClient
      */
     @Bean(name = "cosClient")
     public COSClient cosClient() {
+        return createCosClient();
+    }
+
+    /**
+     * 创建永久密钥的COSClient实例（工厂方法，每次调用创建新实例）
+     * 用于生成预签名URL等需要独立客户端的场景
+     *
+     * @return COSClient 新的客户端实例
+     */
+    public COSClient createCosClient() {
         // 1 初始化用户身份信息(secretId, secretKey)
         var cred = new BasicCOSCredentials(apiSecretId, apiSecretKey);
         // 2 设置 bucket 的地域
