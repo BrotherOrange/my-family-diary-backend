@@ -60,3 +60,9 @@ jwt:
 
 log-trace:
   trace-header: x-trace-id
+
+# Springdoc 配置 - 适配 Nginx 代理（Nginx 会自动添加 context-path）
+springdoc:
+  swagger-ui:
+    url: /v3/api-docs
+    config-url: /v3/api-docs/swagger-config
