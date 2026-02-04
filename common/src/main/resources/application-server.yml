@@ -41,6 +41,9 @@ wechat:
   app-id: ${WECHAT_APP_ID}
   app-secret: ${WECHAT_APP_SECRET}
   code-to-session-url: https://api.weixin.qq.com/sns/jscode2session
+  retry:
+    max-attempts: 3
+    base-backoff-ms: 200
 
 tencent-cloud:
   app-id: 1259817492
@@ -51,6 +54,9 @@ tencent-cloud:
     region: ap-guangzhou
     host: cos.jihao-family.com
     default-host: jihao-family-1259817492.cos.ap-guangzhou.myqcloud.com
+    retry:
+      max-attempts: 3
+      base-backoff-ms: 200
 
 jwt:
   secret-key: ${JWT_SECRET}

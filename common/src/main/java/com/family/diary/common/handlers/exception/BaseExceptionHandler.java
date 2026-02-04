@@ -19,7 +19,6 @@ import com.family.diary.common.enums.errors.ExceptionErrorCode;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.models.common.exception.ErrorMap;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
  * 通用异常处理基类，不绑定到具体的异常处理器注解
@@ -52,13 +51,12 @@ public abstract class BaseExceptionHandler {
     }
 
     /**
-     * 处理所有未捕获的异常
+     * 创建未知异常
      *
      * @param ex 异常对象
-     * @return 包含错误信息的响应实体
+     * @return BaseException
      */
-    @ExceptionHandler(Exception.class)
-    public Object handleException(Exception ex) throws BaseException {
-        throw new BaseException(ExceptionErrorCode.UNKNOWN_ERROR, ex.getMessage(), ex.getCause());
+    protected BaseException toUnknownException(Exception ex) {
+        return new BaseException(ExceptionErrorCode.UNKNOWN_ERROR, ex.getMessage(), ex.getCause());
     }
 }

@@ -31,7 +31,8 @@ public enum ExceptionErrorCode {
     UNAUTHORIZED("ERR-0004", "未授权"),
     FORBIDDEN("ERR-0005", "禁止访问"),
     NOT_FOUND("ERR-0006", "资源不存在"),
-    TIMEOUT("ERR-0007", "操作超时");
+    TIMEOUT("ERR-0007", "操作超时"),
+    CONFLICT("ERR-0008", "资源冲突");
 
     /**
      * 错误码

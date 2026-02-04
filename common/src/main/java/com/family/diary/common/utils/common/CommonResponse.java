@@ -46,6 +46,11 @@ public class CommonResponse<T> {
     private Integer code;
 
     /**
+     * 业务错误码
+     */
+    private String bizCode;
+
+    /**
      * 响应状态
      */
     private Boolean success;
@@ -71,7 +76,7 @@ public class CommonResponse<T> {
      * @return CommonResponse<T>
      */
     public static <T> ResponseEntity<CommonResponse<T>> ok(T data) {
-        return buildCommonResponse(200, true, "操作成功", null, data);
+        return buildCommonResponse(200, 200, true, "操作成功", null, null, data);
     }
 
     /**
@@ -103,7 +108,8 @@ public class CommonResponse<T> {
      * @return CommonResponse<T>
      */
     public static <T> ResponseEntity<CommonResponse<T>> fail(ResponseErrorCode errorCode, String errors) {
-        return buildCommonResponse(errorCode.getCode(), false, errorCode.getMessage(), errors, null);
+        return buildCommonResponse(errorCode.getHttpStatus(), errorCode.getCode(), false,
+                errorCode.getMessage(), errors, null, null);
     }
 
     /**
@@ -116,12 +122,28 @@ public class CommonResponse<T> {
      */
     public static <T> ResponseEntity<CommonResponse<T>> fail(
             ResponseErrorCode errorCode, String message, String errors) {
-        return buildCommonResponse(errorCode.getCode(), false, message, errors, null);
+        return buildCommonResponse(errorCode.getHttpStatus(), errorCode.getCode(), false,
+                message, errors, null, null);
+    }
+
+    /**
+     * 响应失败（带业务码）
+     *
+     * @param errorCode 错误码
+     * @param message   错误消息
+     * @param errors    errors
+     * @param bizCode   业务错误码
+     * @return CommonResponse<T>
+     */
+    public static <T> ResponseEntity<CommonResponse<T>> fail(
+            ResponseErrorCode errorCode, String message, String errors, String bizCode) {
+        return buildCommonResponse(errorCode.getHttpStatus(), errorCode.getCode(), false,
+                message, errors, bizCode, null);
     }
 
     private static <T> ResponseEntity<CommonResponse<T>> buildCommonResponse(
-            int code, Boolean success, String message, String errors, T data) {
-        return ResponseEntity.status(code).body(new CommonResponse<>(code, success, message, errors, data));
+            int httpStatus, Integer code, Boolean success, String message, String errors, String bizCode, T data) {
+        return ResponseEntity.status(httpStatus).body(new CommonResponse<>(code, bizCode, success, message, errors, data));
     }
 
     // ==================== Filter 响应写入方法 ====================
@@ -145,6 +167,7 @@ public class CommonResponse<T> {
 
         CommonResponse<T> body = new CommonResponse<>(
                 errorCode.getCode(),
+                null,
                 false,
                 message,
                 null,

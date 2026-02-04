@@ -18,7 +18,6 @@ package com.family.diary.common.utils.web.jwt;
 import com.family.diary.common.constants.common.JWTConstants;
 import com.family.diary.common.constants.redis.RedisConstants;
 import com.family.diary.common.enums.jwt.TokenType;
-import com.family.diary.common.utils.redis.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -32,8 +31,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.nio.charset.StandardCharsets;
 
 /**
  * JWT Token处理工具类
@@ -46,7 +45,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class JwtUtil {
 
-    private final RedisUtil redisUtil;
+    private final TokenStore tokenStore;
 
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
@@ -105,7 +104,7 @@ public class JwtUtil {
      */
     public void invalidateAllTokens(String openId) {
         for (TokenType tokenType : TokenType.values()) {
-            redisUtil.delete(buildTokenRedisKey(openId, tokenType));
+            tokenStore.delete(buildTokenRedisKey(openId, tokenType));
         }
     }
 
@@ -163,8 +162,8 @@ public class JwtUtil {
                 .compact();
 
         var redisKey = buildTokenRedisKey(openId, tokenType);
-        redisUtil.delete(redisKey);
-        redisUtil.setWithExpire(redisKey, token, tokenType.getExpiration(), TimeUnit.MILLISECONDS);
+        tokenStore.delete(redisKey);
+        tokenStore.save(redisKey, token, tokenType.getExpiration());
 
         return token;
     }
@@ -189,7 +188,7 @@ public class JwtUtil {
             }
 
             // 验证Redis中存储的Token
-            var storedToken = redisUtil.get(buildTokenRedisKey(openId, tokenType));
+            var storedToken = tokenStore.get(buildTokenRedisKey(openId, tokenType));
             var isValidToken = storedToken != null
                     && storedToken.equals(token)
                     && extractedOpenId.equals(openId)
@@ -261,6 +260,6 @@ public class JwtUtil {
      * @return 签名密钥
      */
     private Key getSignInKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 }

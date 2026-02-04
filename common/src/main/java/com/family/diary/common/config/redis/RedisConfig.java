@@ -54,8 +54,10 @@ public class RedisConfig {
         var standaloneConfig = new RedisStandaloneConfiguration();
         standaloneConfig.setHostName(redisProperties.getHost());
         standaloneConfig.setPort(redisProperties.getPort());
-        if (!redisProperties.isVersionLessThan6()) {
-            standaloneConfig.setUsername(redisProperties.getUsername());
+        var username = redisProperties.getUsername();
+        if (!redisProperties.isVersionLessThan6() && username != null && !username.isBlank()
+                && !"default".equalsIgnoreCase(username.trim())) {
+            standaloneConfig.setUsername(username);
         } else {
             log.warn("Redis版本：{}小于6.0，直接使用密码认证", redisProperties.getVersion());
         }

@@ -18,7 +18,6 @@ package com.family.diary.api.controller.tencentcloud;
 import com.family.diary.api.dto.request.tencentcloud.cos.COSAvatarUploadRequest;
 import com.family.diary.api.mapper.tencentcloud.cos.COSAvatarUploadMapper;
 import com.family.diary.api.service.tencentcloud.COSService;
-import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.CommonResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -65,13 +64,8 @@ public class COSController {
     public ResponseEntity<CommonResponse<String>> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
         log.info("开始上传头像");
         var entity = cosAvatarUploadMapper.toCOSAvatarUploadEntity(request);
-        try {
-            var tempAvatarUrl = cosService.uploadAvatarToCOS(entity);
-            return CommonResponse.ok(tempAvatarUrl);
-        } catch (BaseException e) {
-            log.error("头像上传失败", e);
-            return CommonResponse.fail(e.getMessage());
-        }
+        var tempAvatarUrl = cosService.uploadAvatarToCOS(entity);
+        return CommonResponse.ok(tempAvatarUrl);
     }
 
     /**

@@ -16,6 +16,7 @@
 package com.family.diary.api.service.user.impl;
 
 import com.family.diary.api.service.user.UserService;
+import com.family.diary.common.exceptions.ConflictException;
 import com.family.diary.common.exceptions.database.InsertException;
 import com.family.diary.common.exceptions.database.QueryException;
 import com.family.diary.domain.entity.user.UserEntity;
@@ -23,6 +24,7 @@ import com.family.diary.domain.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,10 +40,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserEntity create(UserEntity user) throws QueryException, InsertException {
-        var result = userRepository.save(user);
+    public UserEntity create(UserEntity user) {
+        int result;
+        try {
+            result = userRepository.save(user);
+        } catch (DuplicateKeyException e) {
+            log.warn("用户已存在，无法重复创建: {}", user.getOpenId());
+            throw new ConflictException("用户已存在，无法重复注册！");
+        }
         if (result == 0) {
-            log.error("创建用户失败: {}", user);
+            log.error("创建用户失败, openId: {}", user.getOpenId());
             throw new InsertException("User creation failed");
         }
         try {
@@ -54,11 +62,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity findById(Long id) {
-        return null;
+        var user = userRepository.findById(id);
+        if (user == null) {
+            throw new QueryException("用户不存在");
+        }
+        return user;
     }
 
     @Override
-    public UserEntity findByOpenId(String openId) throws QueryException {
+    public UserEntity findByOpenId(String openId) {
         return userRepository.findByOpenId(openId);
     }
 }

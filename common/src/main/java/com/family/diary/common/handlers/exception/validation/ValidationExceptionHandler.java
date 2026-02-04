@@ -36,17 +36,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class ValidationExceptionHandler extends BaseExceptionHandler {
 
-    @Override
-    public Object handleException(Exception ex) {
-        if (ex instanceof MethodArgumentNotValidException) {
-            return handleMethodArgumentNotValid((MethodArgumentNotValidException) ex);
-        } else if (ex instanceof ConstraintViolationException) {
-            return handleConstraintViolation((ConstraintViolationException) ex);
-        } else {
-            return super.handleException(ex);
-        }
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse<Map<String, Object>>> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex) {
