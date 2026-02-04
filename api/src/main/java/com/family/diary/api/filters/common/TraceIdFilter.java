@@ -67,7 +67,12 @@ public class TraceIdFilter extends OncePerRequestFilter {
             path = requestUri.substring(contextPath.length());
         }
 
-        return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
+        boolean shouldSkip = EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
+        // 临时使用 info 级别方便调试，之后改回 debug
+        log.info("TraceIdFilter check - requestUri: {}, contextPath: {}, path: {}, shouldSkip: {}",
+                requestUri, contextPath, path, shouldSkip);
+
+        return shouldSkip;
     }
 
     @Override
