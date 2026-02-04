@@ -63,12 +63,8 @@ public class TraceIdFilter extends OncePerRequestFilter {
 
         // 移除 context path 获取实际的 servlet path
         String path = requestUri;
-        if (contextPath != null && !contextPath.isEmpty()) {
-            // 处理 Nginx 代理导致的 context path 重复问题
-            // 例如: /family/diary/api/family/diary/api/swagger-ui/index.html
-            while (path.startsWith(contextPath)) {
-                path = path.substring(contextPath.length());
-            }
+        if (contextPath != null && !contextPath.isEmpty() && requestUri.startsWith(contextPath)) {
+            path = requestUri.substring(contextPath.length());
         }
 
         return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
