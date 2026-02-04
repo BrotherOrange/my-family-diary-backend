@@ -64,6 +64,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Swagger UI 放行
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        // Actuator 健康检查放行
+                        .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         // 业务接口放行
                         .requestMatchers("/v1/register").permitAll() // 注册放行
                         .requestMatchers("/v1/login").permitAll() // 登录放行

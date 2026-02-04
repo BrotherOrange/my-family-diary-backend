@@ -31,6 +31,6 @@ public class InsertException extends BaseException {
      * @param message 异常信息
      */
     public InsertException(String message) {
-        super(ExceptionErrorCode.FORBIDDEN, message);
+        super(ExceptionErrorCode.COMMON_ERROR, message);
     }
 }

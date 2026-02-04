@@ -18,7 +18,6 @@ package com.family.diary.api.controller.wechat;
 import com.family.diary.api.dto.request.wechat.Code2SessionRequest;
 import com.family.diary.api.dto.response.wechat.Code2SessionResponse;
 import com.family.diary.api.service.wechat.WeChatAccountService;
-import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.CommonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -58,13 +57,8 @@ public class WeChatAccountController {
     @PostMapping("/code2session")
     public ResponseEntity<CommonResponse<Code2SessionResponse>> code2Session(
             @RequestBody @Valid Code2SessionRequest request) {
-        try {
-            String openId = weChatAccountService.getOpenIdByCode(request.getCode());
-            log.info("静默登录成功，openId: {}", openId);
-            return CommonResponse.ok(new Code2SessionResponse(openId));
-        } catch (BaseException e) {
-            log.error("静默登录失败，错误信息: {}", e.getMessage());
-            return CommonResponse.fail(e.getMessage());
-        }
+        String openId = weChatAccountService.getOpenIdByCode(request.getCode());
+        log.info("静默登录成功，openId: {}", openId);
+        return CommonResponse.ok(new Code2SessionResponse(openId));
     }
 }

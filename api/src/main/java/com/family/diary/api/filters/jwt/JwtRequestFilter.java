@@ -19,7 +19,7 @@ import com.family.diary.api.service.user.UserService;
 import com.family.diary.common.constants.response.ResponseMessageConstants;
 import com.family.diary.common.enums.errors.ResponseErrorCode;
 import com.family.diary.common.utils.common.CommonResponse;
-import com.family.diary.common.utils.web.jwt.JwtUtil;
+import com.family.diary.api.service.token.TokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -54,7 +54,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final UserService userService;
 
-    private final JwtUtil jwtUtil;
+    private final TokenService tokenService;
 
     @Value("${jwt.token-header}")
     private String tokenHeader;
@@ -77,7 +77,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith(tokenPrefix)) {
             jwt = authorizationHeader.substring(tokenPrefix.trim().length() + 1); // 去掉"Bearer "前缀
             try {
-                openId = jwtUtil.extractOpenId(jwt);
+                openId = tokenService.extractOpenId(jwt);
             } catch (ExpiredJwtException e) {
                 log.warn("Access Token已过期", e);
                 tokenExpired = true;
@@ -99,7 +99,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             var userDetails = userService.findByOpenId(openId);
 
             // 验证Access Token
-            if (userDetails != null && jwtUtil.validateAccessToken(jwt, openId)) {
+            if (userDetails != null && tokenService.validateAccessToken(jwt, openId)) {
                 // 创建认证对象
                 var authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, new ArrayList<>());

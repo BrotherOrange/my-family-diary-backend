@@ -15,8 +15,6 @@
 
 package com.family.diary.api.service.user;
 
-import com.family.diary.common.exceptions.database.InsertException;
-import com.family.diary.common.exceptions.database.QueryException;
 import com.family.diary.domain.entity.user.UserEntity;
 
 /**
@@ -31,10 +29,8 @@ public interface AuthService {
      *
      * @param user 用户实体
      * @return 被创建的用户实体
-     * @throws QueryException 查询异常
-     * @throws InsertException 插入异常
      */
-    UserEntity register(UserEntity user) throws QueryException, InsertException;
+    UserEntity register(UserEntity user);
 
     /**
      * 用户登录
@@ -42,7 +38,6 @@ public interface AuthService {
      * @param openId 微信openId
      * @param password 用户明文密码
      * @return UserEntity 登录的用户实体
-     * @throws QueryException 查询异常
      */
-    UserEntity login(String openId, String password) throws QueryException;
+    UserEntity login(String openId, String password);
 }

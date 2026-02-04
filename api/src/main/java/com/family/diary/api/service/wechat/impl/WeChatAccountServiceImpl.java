@@ -15,23 +15,14 @@
 
 package com.family.diary.api.service.wechat.impl;
 
-import com.family.diary.api.dto.response.wechat.WeChatSessionResponse;
+import com.family.diary.api.client.wechat.WeChatClient;
 import com.family.diary.api.service.wechat.WeChatAccountService;
 import com.family.diary.common.enums.errors.ExceptionErrorCode;
 import com.family.diary.common.exceptions.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
-import java.util.Collections;
 
 /**
  * 微信账户服务实现类
@@ -43,38 +34,33 @@ import java.util.Collections;
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WeChatAccountServiceImpl implements WeChatAccountService {
-    private final RestTemplate restTemplate;
-
-    @Value("${wechat.app-id}")
-    private String appId;
-
-    @Value("${wechat.app-secret}")
-    private String appSecret;
-
-    @Value("${wechat.code-to-session-url}")
-    private String codeToSessionUrl;
+    private final WeChatClient weChatClient;
 
     @Override
     public String getOpenIdByCode(String code) throws BaseException {
-        log.info("静默登录，code: {}", code);
+        log.info("静默登录，code: {}", maskCode(code));
         try {
-            var requestUrl = codeToSessionUrl + "?appid=" + appId +
-                    "&secret=" + appSecret +
-                    "&js_code=" + code +
-                    "&grant_type=authorization_code";
-
-            var url = new URI(requestUrl);
-            var headers = new HttpHeaders();
-            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-            var httpEntity = new HttpEntity<>(headers);
-            WeChatSessionResponse sessionResponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-                    WeChatSessionResponse.class).getBody();
-            log.info("静默登录成功，openId: {}", sessionResponse != null ? sessionResponse.getOpenId() : null);
-            assert sessionResponse != null;
+            var sessionResponse = weChatClient.code2Session(code);
+            if (sessionResponse == null || sessionResponse.getOpenId() == null
+                    || sessionResponse.getOpenId().isBlank()) {
+                log.error("静默登录失败，未获取到OpenId");
+                throw new BaseException(ExceptionErrorCode.COMMON_ERROR, "获取openId失败");
+            }
+            log.info("静默登录成功，openId: {}", sessionResponse.getOpenId());
             return sessionResponse.getOpenId();
         } catch (Exception e) {
-            log.error("静默登录失败，code: {}, 错误信息: {}", code, e.getMessage());
+            log.error("静默登录失败，code: {}, 错误信息: {}", maskCode(code), e.getMessage());
             throw new BaseException(ExceptionErrorCode.COMMON_ERROR, "获取openId失败: " + e.getMessage());
         }
+    }
+
+    private String maskCode(String code) {
+        if (code == null || code.isBlank()) {
+            return "null";
+        }
+        if (code.length() <= 6) {
+            return "******";
+        }
+        return code.substring(0, 3) + "****" + code.substring(code.length() - 3);
     }
 }

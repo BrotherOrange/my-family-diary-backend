@@ -1,4 +1,4 @@
-package com.family.diary.api;
+package com.family.diary;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * 启动类
  *
  * @author Richard Zhang
- * @since 2025-07-23
+ * @since 2026-02-04
  */
 @Slf4j
 @EnableAsync

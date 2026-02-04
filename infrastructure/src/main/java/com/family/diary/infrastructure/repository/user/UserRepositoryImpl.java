@@ -16,7 +16,7 @@
 package com.family.diary.infrastructure.repository.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.family.diary.common.exceptions.database.QueryException;
+import com.family.diary.common.exceptions.ConflictException;
 import com.family.diary.domain.entity.user.UserEntity;
 import com.family.diary.domain.repository.user.UserRepository;
 import com.family.diary.infrastructure.dao.user.UserDAO;
@@ -27,8 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
 
 /**
  * UserRepository实现类
@@ -46,25 +44,24 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public int save(UserEntity user) {
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
         return userDAO.insert(userMapper.toUserPo(user));
     }
 
     @Override
     public UserEntity findById(Long id) {
-        return userMapper.toUserEntity(userDAO.selectById(id));
+        var userPo = userDAO.selectById(id);
+        return userPo != null ? userMapper.toUserEntity(userPo) : null;
     }
 
     @Override
-    public UserEntity findByOpenId(String openId) throws QueryException {
+    public UserEntity findByOpenId(String openId) {
         var queryWrapper = new QueryWrapper<UserPo>().lambda().eq(UserPo::getOpenId, openId);
         try {
             var userPo = userDAO.selectOne(queryWrapper);
             return userPo != null ? userMapper.toUserEntity(userPo) : null;
         } catch (TooManyResultsException e) {
             log.error("OpenId {} 查询到多个用户", openId);
-            throw new QueryException("OpenId重复!");
+            throw new ConflictException("OpenId重复!");
         }
     }
 }
