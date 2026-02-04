@@ -16,6 +16,9 @@
 package com.family.diary.api.config;
 
 import com.family.diary.api.filters.jwt.JwtRequestFilter;
+import com.family.diary.common.constants.response.ResponseMessageConstants;
+import com.family.diary.common.enums.errors.ResponseErrorCode;
+import com.family.diary.common.utils.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -59,15 +62,28 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
+                        // Swagger UI 放行
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        // 业务接口放行
                         .requestMatchers("/v1/register").permitAll() // 注册放行
                         .requestMatchers("/v1/login").permitAll() // 登录放行
                         .requestMatchers("/v1/user/exists").permitAll() // 用户存在检查放行
                         .requestMatchers("/v1/wechat/account/info").permitAll() // 微信登录放行
                         .requestMatchers("/v1/wechat/account/code2session").permitAll() // 微信静默登录放行
+                        .requestMatchers("/v1/token/refresh").permitAll() // Token刷新放行
                         .anyRequest().authenticated() // 其他请求需要认证
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) ->
+                                CommonResponse.writeErrorResponse(
+                                        response,
+                                        ResponseErrorCode.UNAUTHORIZED,
+                                        ResponseMessageConstants.UNAUTHORIZED
+                                )
+                        )
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

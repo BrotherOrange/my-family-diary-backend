@@ -16,11 +16,17 @@
 package com.family.diary.common.utils.common;
 
 import com.family.diary.common.enums.errors.ResponseErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 统一返回体格式
@@ -116,5 +122,47 @@ public class CommonResponse<T> {
     private static <T> ResponseEntity<CommonResponse<T>> buildCommonResponse(
             int code, Boolean success, String message, String errors, T data) {
         return ResponseEntity.status(code).body(new CommonResponse<>(code, success, message, errors, data));
+    }
+
+    // ==================== Filter 响应写入方法 ====================
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    /**
+     * 在 Filter 中写入失败响应（用于无法使用 ResponseEntity 的场景）
+     *
+     * @param response  HttpServletResponse
+     * @param errorCode 错误码枚举
+     * @param message   错误消息
+     * @param data      响应数据
+     * @throws IOException IO异常
+     */
+    public static <T> void writeErrorResponse(HttpServletResponse response, ResponseErrorCode errorCode,
+                                              String message, T data) throws IOException {
+        response.setStatus(errorCode.getHttpStatus());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+        CommonResponse<T> body = new CommonResponse<>(
+                errorCode.getCode(),
+                false,
+                message,
+                null,
+                data
+        );
+        response.getWriter().write(OBJECT_MAPPER.writeValueAsString(body));
+    }
+
+    /**
+     * 在 Filter 中写入失败响应（无数据）
+     *
+     * @param response  HttpServletResponse
+     * @param errorCode 错误码枚举
+     * @param message   错误消息
+     * @throws IOException IO异常
+     */
+    public static void writeErrorResponse(HttpServletResponse response, ResponseErrorCode errorCode,
+                                          String message) throws IOException {
+        writeErrorResponse(response, errorCode, message, null);
     }
 }

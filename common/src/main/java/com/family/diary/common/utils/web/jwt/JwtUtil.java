@@ -17,8 +17,10 @@ package com.family.diary.common.utils.web.jwt;
 
 import com.family.diary.common.constants.common.JWTConstants;
 import com.family.diary.common.constants.redis.RedisConstants;
+import com.family.diary.common.enums.jwt.TokenType;
 import com.family.diary.common.utils.redis.RedisUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -52,24 +54,62 @@ public class JwtUtil {
     @Value("${jwt.token-redis-prefix}")
     private String JWT_REDIS_KEY_PREFIX;
 
+    // ==================== 公开API（门面方法） ====================
+
     /**
-     * 生成JWT Token
+     * 生成Access Token
      *
      * @param openId 微信OpenID
-     * @return JWT Token String
+     * @return Access Token String
      */
-    public String generateToken(String openId) {
-        var token = Jwts.builder()
-                .setSubject(openId)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + JWTConstants.EXPIRATION_TIME))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS512) // 使用HS512算法
-                .compact();
-        var redisKey = buildJwtRedisTokenKey(openId);
-        redisUtil.delete(redisKey);
-        redisUtil.setWithExpire(redisKey, token, JWTConstants.EXPIRATION_TIME, TimeUnit.MILLISECONDS);
-        return token;
+    public String generateAccessToken(String openId) {
+        return generateToken(openId, TokenType.ACCESS);
     }
+
+    /**
+     * 生成Refresh Token
+     *
+     * @param openId 微信OpenID
+     * @return Refresh Token String
+     */
+    public String generateRefreshToken(String openId) {
+        return generateToken(openId, TokenType.REFRESH);
+    }
+
+    /**
+     * 验证Access Token是否有效
+     *
+     * @param token  Access Token
+     * @param openId 微信OpenID
+     * @return 是：有效 / 否：无效
+     */
+    public Boolean validateAccessToken(String token, String openId) {
+        return validateToken(token, openId, TokenType.ACCESS);
+    }
+
+    /**
+     * 验证Refresh Token是否有效
+     *
+     * @param token  Refresh Token
+     * @param openId 微信OpenID
+     * @return 是：有效 / 否：无效
+     */
+    public Boolean validateRefreshToken(String token, String openId) {
+        return validateToken(token, openId, TokenType.REFRESH);
+    }
+
+    /**
+     * 删除用户的所有Token（用于登出）
+     *
+     * @param openId 微信OpenID
+     */
+    public void invalidateAllTokens(String openId) {
+        for (TokenType tokenType : TokenType.values()) {
+            redisUtil.delete(buildTokenRedisKey(openId, tokenType));
+        }
+    }
+
+    // ==================== Token信息提取 ====================
 
     /**
      * 从Token中提取微信OpenID
@@ -79,6 +119,16 @@ public class JwtUtil {
      */
     public String extractOpenId(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    /**
+     * 提取Token类型
+     *
+     * @param token token
+     * @return Token类型
+     */
+    public String extractTokenType(String token) {
+        return extractClaim(token, claims -> claims.get(JWTConstants.CLAIM_TOKEN_TYPE, String.class));
     }
 
     /**
@@ -94,15 +144,82 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
+    // ==================== 核心私有方法（参数化实现） ====================
+
     /**
-     * 提取JwtToken的Redis Key值
+     * 生成Token（核心方法）
      *
-     * @param openId openId
-     * @return JwtToken的Redis Key值
+     * @param openId    微信OpenID
+     * @param tokenType Token类型
+     * @return Token String
      */
-    public String buildJwtRedisTokenKey(String openId) {
-        return JWT_REDIS_KEY_PREFIX + RedisConstants.REDIS_KEY_CONNECTOR + openId;
+    private String generateToken(String openId, TokenType tokenType) {
+        var token = Jwts.builder()
+                .setSubject(openId)
+                .claim(JWTConstants.CLAIM_TOKEN_TYPE, tokenType.getType())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + tokenType.getExpiration()))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS512)
+                .compact();
+
+        var redisKey = buildTokenRedisKey(openId, tokenType);
+        redisUtil.delete(redisKey);
+        redisUtil.setWithExpire(redisKey, token, tokenType.getExpiration(), TimeUnit.MILLISECONDS);
+
+        return token;
     }
+
+    /**
+     * 验证Token（核心方法）
+     *
+     * @param token     Token
+     * @param openId    微信OpenID
+     * @param tokenType 期望的Token类型
+     * @return 是：有效 / 否：无效
+     */
+    private Boolean validateToken(String token, String openId, TokenType tokenType) {
+        try {
+            final var extractedOpenId = extractOpenId(token);
+            final var extractedType = extractTokenType(token);
+
+            // 验证Token类型
+            if (!tokenType.getType().equals(extractedType)) {
+                log.warn("Token类型不匹配，期望: {}, 实际: {}", tokenType.getType(), extractedType);
+                return false;
+            }
+
+            // 验证Redis中存储的Token
+            var storedToken = redisUtil.get(buildTokenRedisKey(openId, tokenType));
+            var isValidToken = storedToken != null
+                    && storedToken.equals(token)
+                    && extractedOpenId.equals(openId)
+                    && !isTokenExpired(token);
+
+            if (!isValidToken) {
+                log.warn("Open ID为{}的用户使用的{} Token无效或过期", openId, tokenType.getType());
+            }
+
+            return isValidToken;
+        } catch (ExpiredJwtException e) {
+            log.warn("Open ID为{}的用户{} Token已过期", openId, tokenType.getType());
+            return false;
+        }
+    }
+
+    /**
+     * 构建Token的Redis Key
+     *
+     * @param openId    openId
+     * @param tokenType Token类型
+     * @return Token的Redis Key
+     */
+    private String buildTokenRedisKey(String openId, TokenType tokenType) {
+        return JWT_REDIS_KEY_PREFIX
+                + RedisConstants.REDIS_KEY_CONNECTOR + tokenType.getType()
+                + RedisConstants.REDIS_KEY_CONNECTOR + openId;
+    }
+
+    // ==================== 辅助私有方法 ====================
 
     /**
      * 解析Token获取所有声明
@@ -116,23 +233,6 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    /**
-     * 验证Token是否有效
-     *
-     * @param token  token
-     * @param openId 微信OpenID
-     * @return 是：有效 / 否：无效
-     */
-    public Boolean validateToken(String token, String openId) {
-        final var extractedOpenId = extractOpenId(token);
-        var isValidToken = redisUtil.get(buildJwtRedisTokenKey(openId)).equals(token) && extractedOpenId.equals(openId)
-                && !isTokenExpired(token);
-        if (!isValidToken) {
-            log.warn("Open ID为{}的用户使用的token无效或过期", openId);
-        }
-        return isValidToken;
     }
 
     /**
@@ -164,4 +264,3 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 }
-

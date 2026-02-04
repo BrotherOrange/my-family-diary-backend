@@ -15,6 +15,7 @@
 
 package com.family.diary.api.dto.response.wechat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,9 +29,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "微信静默登录响应")
 public class Code2SessionResponse {
-    /**
-     * 用户唯一标识 OpenID
-     */
+
+    @Schema(description = "用户唯一标识OpenID", example = "oXxx_xxxxxxxxxxxxx")
     private String openId;
 }

@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Richard Zhang
  * @since 2025-07-12
  */
+@Tag(name = "微信接口", description = "微信小程序登录相关接口")
 @Slf4j
 @RestController
 @Validated
@@ -51,6 +54,7 @@ public class WeChatAccountController {
      * @param request request
      * @return Code2SessionResponse
      */
+    @Operation(summary = "静默登录", description = "使用微信小程序wx.login获取的code换取用户OpenID，无需Bearer Token认证")
     @PostMapping("/code2session")
     public ResponseEntity<CommonResponse<Code2SessionResponse>> code2Session(
             @RequestBody @Valid Code2SessionRequest request) {

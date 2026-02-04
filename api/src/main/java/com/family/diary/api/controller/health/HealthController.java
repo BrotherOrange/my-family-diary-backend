@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Richard Zhang
  * @since 2025-07-11
  */
+@Tag(name = "健康检查", description = "服务健康状态检查接口")
 @Slf4j
 @RestController
 @Validated
@@ -42,6 +45,7 @@ public class HealthController {
      *
      * @return String
      */
+    @Operation(summary = "健康检查", description = "检查服务是否正常运行")
     @GetMapping("/check")
     public ResponseEntity<CommonResponse<String>> healthCheck() {
         log.info("健康检查成功");

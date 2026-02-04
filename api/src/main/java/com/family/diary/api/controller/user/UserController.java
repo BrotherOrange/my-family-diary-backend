@@ -26,6 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Richard Zhang
  * @since 2025-11-22
  */
+@Tag(name = "用户管理", description = "用户信息查询相关接口")
 @Slf4j
 @RestController
 @Validated
@@ -50,25 +54,15 @@ public class UserController {
     private final COSService cosService;
 
     /**
-     * 刷新用户token
-     *
-     * @param openId openId
-     * @return 新的用户token
-     */
-    @GetMapping("/token/refresh")
-    public ResponseEntity<CommonResponse<String>> refreshToken(
-            @RequestParam("openId") @NotBlank(message = "Open ID不能为空") String openId) {
-        return CommonResponse.ok(userService.refreshToken(openId));
-    }
-
-    /**
      * 检查用户是否已注册
      *
      * @param openId 微信openId
      * @return CommonResponse<UserCheckResponse>
      */
+    @Operation(summary = "检查用户注册状态", description = "根据微信OpenID检查用户是否已注册，已注册则返回用户基本信息")
     @GetMapping("/exists")
     public ResponseEntity<CommonResponse<UserCheckResponse>> checkUserExists(
+            @Parameter(description = "微信OpenID", required = true, example = "oXxx_xxxxxxxxxxxxx")
             @RequestParam("openId") @NotBlank(message = "Open ID不能为空") String openId) {
         log.info("检查用户注册状态, openId: {}", openId);
         var user = userService.findByOpenId(openId);

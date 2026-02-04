@@ -16,6 +16,7 @@
 package com.family.diary.api.dto.response.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,19 +35,15 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Schema(description = "用户注册状态检查响应")
 public class UserCheckResponse {
-    /**
-     * 是否已注册
-     */
+
+    @Schema(description = "是否已注册", example = "true")
     private Boolean registered;
 
-    /**
-     * 用户名（已注册用户返回）
-     */
+    @Schema(description = "用户名（已注册用户返回）", example = "张三")
     private String username;
 
-    /**
-     * 头像URL（已注册用户返回）
-     */
+    @Schema(description = "头像URL（已注册用户返回）", example = "https://example.com/avatar.jpg")
     private String avatarUrl;
 }

@@ -47,12 +47,4 @@ public interface UserService {
      * @return 用户实体
      */
     UserEntity findByOpenId(String openId);
-
-    /**
-     * 刷新用户token
-     *
-     * @param openId openId
-     * @return 新的用户token
-     */
-    String refreshToken(String openId);
 }

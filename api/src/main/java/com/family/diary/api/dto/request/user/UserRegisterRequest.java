@@ -17,6 +17,7 @@ package com.family.diary.api.dto.request.user;
 
 import com.family.diary.api.dto.validation.common.annotation.ChinesePhone;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -41,44 +42,34 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Schema(description = "用户注册请求")
 public class UserRegisterRequest {
-    /**
-     * 微信账户OpenID
-     */
+
+    @Schema(description = "微信OpenId", example = "oXxx_xxxxxxxxxxxxx", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "微信Open ID不得为空")
     private String openId;
 
-    /**
-     * 用户名
-     */
+    @Schema(description = "用户名", example = "张三", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "用户名不得为空")
     @Size(min = 1, max = 20, message = "用户名长度不能超过20个字符")
     private String username;
 
-    /**
-     * 密码
-     */
+    @Schema(description = "用户密码", example = "password123", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "密码不得为空")
     @Size(min = 8, max = 30, message = "密码长度必须为8-30位之间")
     private String password;
 
-    /**
-     * 生日
-     */
+    @Schema(description = "生日", example = "1990-01-01", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "生日不得为空")
     @PastOrPresent(message = "生日时间不得晚于当前时间")
     private LocalDate birthday;
 
-    /**
-     * 手机号
-     */
+    @Schema(description = "手机号", example = "13800138000", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "手机号不得为空")
     @ChinesePhone(message = "手机号格式不合法")
     private String phone;
 
-    /**
-     * 个人简介
-     */
+    @Schema(description = "个人简介", example = "这是我的个人简介")
     @Size(max = 200, message = "个人简介不得超过200个字符")
     private String description;
 }

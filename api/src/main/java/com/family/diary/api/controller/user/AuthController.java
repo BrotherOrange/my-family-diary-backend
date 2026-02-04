@@ -28,13 +28,17 @@ import com.family.diary.common.exceptions.database.QueryException;
 import com.family.diary.common.factories.common.GsonFactory;
 import com.family.diary.common.utils.common.CommonResponse;
 import com.family.diary.common.utils.web.jwt.JwtUtil;
+import com.family.diary.domain.entity.user.UserEntity;
 import com.google.gson.Gson;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Richard Zhang
  * @since 2025-11-22
  */
+@Tag(name = "用户认证", description = "登录、注册、登出相关接口")
 @Slf4j
 @RestController
 @Validated
@@ -68,6 +73,7 @@ public class AuthController {
      * @param userRegisterRequest 用户注册请求
      * @return CommonResponse<UserRegisterResponse>
      */
+    @Operation(summary = "用户注册", description = "新用户注册接口，需要提供微信OpenID、用户名、密码等信息")
     @PostMapping("/register")
     public ResponseEntity<CommonResponse<UserRegisterResponse>> register(
             @RequestBody @Valid UserRegisterRequest userRegisterRequest) {
@@ -88,6 +94,7 @@ public class AuthController {
      * @param userLoginRequest 用户登录请求
      * @return CommonResponse<UserLoginResponse>
      */
+    @Operation(summary = "用户登录", description = "用户登录接口，成功后返回Access Token和Refresh Token")
     @PostMapping("/login")
     public ResponseEntity<CommonResponse<UserLoginResponse>> login(
             @RequestBody @Valid UserLoginRequest userLoginRequest) {
@@ -95,8 +102,11 @@ public class AuthController {
         try {
             var user = authService.login(userLoginRequest.getOpenId(), userLoginRequest.getPassword());
             var userLoginResponse = userApiMapper.toUserLoginResponse(user);
-            String token = jwtUtil.generateToken(user.getOpenId());
-            userLoginResponse.setToken(token);
+            // 生成双Token
+            String accessToken = jwtUtil.generateAccessToken(user.getOpenId());
+            String refreshToken = jwtUtil.generateRefreshToken(user.getOpenId());
+            userLoginResponse.setAccessToken(accessToken);
+            userLoginResponse.setRefreshToken(refreshToken);
             userLoginResponse.setOpenId(user.getOpenId());
             // 获取头像URL
             var avatarUrl = cosService.getAvatarUrl(user.getOpenId());
@@ -106,5 +116,26 @@ public class AuthController {
             log.error("用户登录失败");
             return CommonResponse.fail(ResponseErrorCode.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    /**
+     * 用户登出接口
+     * 使当前用户的所有Token失效
+     *
+     * @param currentUser 当前登录用户（由Spring Security注入）
+     * @return CommonResponse<Void>
+     */
+    @Operation(summary = "用户登出", description = "登出接口，使当前用户的所有Token失效，需要Bearer Token认证")
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse<Void>> logout(@AuthenticationPrincipal UserEntity currentUser) {
+        if (currentUser == null) {
+            log.warn("登出失败：无法获取当前用户信息");
+            return CommonResponse.fail(ResponseErrorCode.UNAUTHORIZED, "用户未登录");
+        }
+        String openId = currentUser.getOpenId();
+        log.info("用户发起登出请求, openId: {}", openId);
+        jwtUtil.invalidateAllTokens(openId);
+        log.info("用户登出成功, openId: {}", openId);
+        return CommonResponse.ok(null);
     }
 }

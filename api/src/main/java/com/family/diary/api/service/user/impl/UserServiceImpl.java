@@ -18,7 +18,6 @@ package com.family.diary.api.service.user.impl;
 import com.family.diary.api.service.user.UserService;
 import com.family.diary.common.exceptions.database.InsertException;
 import com.family.diary.common.exceptions.database.QueryException;
-import com.family.diary.common.utils.web.jwt.JwtUtil;
 import com.family.diary.domain.entity.user.UserEntity;
 import com.family.diary.domain.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +36,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-
-    private final JwtUtil jwtUtil;
 
     @Override
     public UserEntity create(UserEntity user) throws QueryException, InsertException {
@@ -63,10 +60,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findByOpenId(String openId) throws QueryException {
         return userRepository.findByOpenId(openId);
-    }
-
-    @Override
-    public String refreshToken(String openId) {
-        return jwtUtil.generateToken(openId);
     }
 }

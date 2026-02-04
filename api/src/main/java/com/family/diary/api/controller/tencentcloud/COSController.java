@@ -27,6 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Richard Zhang
  * @since 2025-07-15
  */
+@Tag(name = "对象存储", description = "腾讯云COS文件上传相关接口")
 @Slf4j
 @RestController
 @Validated
@@ -56,6 +60,7 @@ public class COSController {
      * @param request 上传头像请求体
      * @return 头像临时链接
      */
+    @Operation(summary = "上传头像", description = "上传用户头像到腾讯云COS，返回临时访问链接")
     @PostMapping("/avatar/upload")
     public ResponseEntity<CommonResponse<String>> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
         log.info("开始上传头像");
@@ -75,8 +80,10 @@ public class COSController {
      * @param openId 用户Open ID
      * @return 头像临时链接
      */
+    @Operation(summary = "获取头像链接", description = "根据用户OpenID获取头像的临时访问链接")
     @GetMapping("/avatar/url")
     public ResponseEntity<CommonResponse<String>> getAvatarUrl(
+            @Parameter(description = "用户OpenID", required = true, example = "oXxx_xxxxxxxxxxxxx")
             @RequestParam @Valid @NotEmpty(message = "openid不能为空") String openId) {
         log.info("开始获取头像URL");
         var tempAvatarUrl = cosService.getAvatarUrl(openId);

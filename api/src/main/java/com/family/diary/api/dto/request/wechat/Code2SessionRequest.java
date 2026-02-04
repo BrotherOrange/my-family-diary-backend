@@ -15,6 +15,7 @@
 
 package com.family.diary.api.dto.request.wechat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,10 +30,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "微信静默登录请求（Code换取OpenID）")
 public class Code2SessionRequest {
-    /**
-     * 小程序登录凭证 code
-     */
+
+    @Schema(description = "小程序登录凭证code（通过wx.login获取）", example = "0a3xxx...", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "code不能为空")
     private String code;
 }
