@@ -16,6 +16,9 @@
 package com.family.diary.api.filters.jwt;
 
 import com.family.diary.api.service.user.UserService;
+import com.family.diary.common.constants.response.ResponseMessageConstants;
+import com.family.diary.common.enums.errors.ResponseErrorCode;
+import com.family.diary.common.utils.common.CommonResponse;
 import com.family.diary.common.utils.web.jwt.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -36,6 +39,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * 用于检测JwtToken合法性的Filter
@@ -67,6 +71,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String openId = null;
         String jwt = null;
+        boolean tokenExpired = false;
 
         // 检查Authorization Header是否存在且以"Bearer "开头
         if (authorizationHeader != null && authorizationHeader.startsWith(tokenPrefix)) {
@@ -74,18 +79,27 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 openId = jwtUtil.extractOpenId(jwt);
             } catch (ExpiredJwtException e) {
-                log.warn("JWT Token已过期", e);
+                log.warn("Access Token已过期", e);
+                tokenExpired = true;
+                // 从过期的token中提取openId
+                openId = e.getClaims().getSubject();
             } catch (MalformedJwtException e) {
                 log.warn("JWT Token无效", e);
             }
+        }
+
+        // 如果token过期，返回带有tokenExpired标志的401响应
+        if (tokenExpired) {
+            sendTokenExpiredResponse(response);
+            return;
         }
 
         // 如果提取到了用户名，并且当前没有认证
         if (openId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = userService.findByOpenId(openId);
 
-            // 验证Token
-            if (userDetails != null && jwtUtil.validateToken(jwt, openId)) {
+            // 验证Access Token
+            if (userDetails != null && jwtUtil.validateAccessToken(jwt, openId)) {
                 // 创建认证对象
                 var authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, new ArrayList<>());
@@ -95,5 +109,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+    }
+
+    /**
+     * 发送Token过期响应
+     *
+     * @param response HTTP响应
+     * @throws IOException IO异常
+     */
+    private void sendTokenExpiredResponse(HttpServletResponse response) throws IOException {
+        CommonResponse.writeErrorResponse(
+                response,
+                ResponseErrorCode.UNAUTHORIZED,
+                ResponseMessageConstants.ACCESS_TOKEN_EXPIRED,
+                Map.of("tokenExpired", true)
+        );
     }
 }

@@ -26,7 +26,25 @@ import org.apache.http.HttpStatus;
  */
 @Getter
 public enum ResponseErrorCode {
+    // ==================== 4xx 客户端错误 ====================
     BAD_REQUEST(400, "非法请求", HttpStatus.SC_BAD_REQUEST),
+    UNAUTHORIZED(401, "未授权", HttpStatus.SC_UNAUTHORIZED),
+    PAYMENT_REQUIRED(402, "需要付款", HttpStatus.SC_PAYMENT_REQUIRED),
+    FORBIDDEN(403, "禁止访问", HttpStatus.SC_FORBIDDEN),
+    NOT_FOUND(404, "资源不存在", HttpStatus.SC_NOT_FOUND),
+    METHOD_NOT_ALLOWED(405, "请求方法不允许", HttpStatus.SC_METHOD_NOT_ALLOWED),
+    NOT_ACCEPTABLE(406, "不可接受的请求", HttpStatus.SC_NOT_ACCEPTABLE),
+    REQUEST_TIMEOUT(408, "请求超时", HttpStatus.SC_REQUEST_TIMEOUT),
+    CONFLICT(409, "资源冲突", HttpStatus.SC_CONFLICT),
+    GONE(410, "资源已删除", HttpStatus.SC_GONE),
+    PRECONDITION_FAILED(412, "前置条件失败", HttpStatus.SC_PRECONDITION_FAILED),
+    PAYLOAD_TOO_LARGE(413, "请求体过大", HttpStatus.SC_REQUEST_TOO_LONG),
+    UNSUPPORTED_MEDIA_TYPE(415, "不支持的媒体类型", HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE),
+    UNPROCESSABLE_ENTITY(422, "无法处理的实体", HttpStatus.SC_UNPROCESSABLE_ENTITY),
+    LOCKED(423, "资源已锁定", HttpStatus.SC_LOCKED),
+    TOO_MANY_REQUESTS(429, "请求过于频繁", 429),
+
+    // ==================== 5xx 服务端错误 ====================
     INTERNAL_SERVER_ERROR(500, "服务器内部错误", HttpStatus.SC_INTERNAL_SERVER_ERROR),
     NOT_IMPLEMENTED(501, "功能未实现", HttpStatus.SC_NOT_IMPLEMENTED),
     BAD_GATEWAY(502, "错误网关", HttpStatus.SC_BAD_GATEWAY),

@@ -20,10 +20,11 @@ package com.family.diary.common.constants.common;
  *
  * @author Richard Zhang
  * @since 2025-08-21
+ * @see com.family.diary.common.enums.jwt.TokenType Token类型及过期时间配置
  */
 public interface JWTConstants {
     /**
-     * JWT过期时间，单位为毫秒
+     * Token类型claim名称
      */
-    Long EXPIRATION_TIME = 3 * 24 * 60 * 60 * 1000L;
+    String CLAIM_TOKEN_TYPE = "token_type";
 }

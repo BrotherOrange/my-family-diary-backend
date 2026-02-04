@@ -16,17 +16,22 @@
 package com.family.diary.api.filters.common;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.family.diary.common.constants.response.ResponseMessageConstants;
+import com.family.diary.common.enums.errors.ResponseErrorCode;
+import com.family.diary.common.utils.common.CommonResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 用于检测请求头是否包含了TraceId的Filter
@@ -36,12 +41,29 @@ import java.io.IOException;
  */
 @Slf4j
 public class TraceIdFilter extends OncePerRequestFilter {
+
+    /**
+     * 不需要 TraceId 的路径（Swagger、Actuator 等）
+     */
+    private static final List<String> EXCLUDED_PATHS = List.of(
+            "/swagger-ui",
+            "/v3/api-docs",
+            "/actuator"
+    );
+
     @Value("${log-trace.trace-header}")
     private String traceHeader;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                              FilterChain filterChain) throws ServletException, IOException {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
+        // 使用 getServletPath() 获取不包含 context path 的路径
+        String path = request.getServletPath();
+        return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
         final var traceId = request.getHeader(traceHeader);
 
         // 检查 traceId 是否存在且非空白
@@ -51,11 +73,12 @@ public class TraceIdFilter extends OncePerRequestFilter {
                     request.getRemoteAddr(),
                     request.getRequestURI());
 
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("""
-                {"error": "Missing or empty trace ID", "requiredHeader": "%s"}
-                """.formatted(traceHeader));
+            CommonResponse.writeErrorResponse(
+                    response,
+                    ResponseErrorCode.BAD_REQUEST,
+                    ResponseMessageConstants.MISSING_TRACE_ID,
+                    Map.of("requiredHeader", traceHeader)
+            );
             return;
         }
 

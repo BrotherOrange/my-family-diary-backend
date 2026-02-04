@@ -16,6 +16,7 @@
 package com.family.diary.api.dto.response.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,29 +35,21 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Schema(description = "用户注册响应")
 public class UserRegisterResponse {
-    /**
-     * 用户名
-     */
+
+    @Schema(description = "用户名", example = "张三")
     private String username;
 
-    /**
-     * 手机号
-     */
+    @Schema(description = "手机号", example = "13800138000")
     private String phone;
 
-    /**
-     * 个人简介
-     */
+    @Schema(description = "个人简介", example = "这是我的个人简介")
     private String description;
 
-    /**
-     * 生日
-     */
+    @Schema(description = "生日", example = "1990-01-01")
     private String birthday;
 
-    /**
-     * 个人状态
-     */
+    @Schema(description = "个人状态", example = "正常")
     private String status;
 }

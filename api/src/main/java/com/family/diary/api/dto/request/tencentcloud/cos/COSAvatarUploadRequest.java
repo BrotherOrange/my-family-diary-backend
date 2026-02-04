@@ -15,6 +15,7 @@
 
 package com.family.diary.api.dto.request.tencentcloud.cos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,17 +30,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "头像上传请求")
 public class COSAvatarUploadRequest {
-    /**
-     * 用户的 OpenID
-     */
+
+    @Schema(description = "用户的OpenID", example = "oXxx_xxxxxxxxxxxxx", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "OpenID不能为空")
     private String openId;
 
-    /**
-     * 用户的头像 Base64 编码字符串
-     * 注意：Base64 编码的字符串需要去掉前缀 "data:image/png;base64,"
-     */
+    @Schema(description = "头像Base64编码字符串（不含data:image/png;base64,前缀）", example = "iVBORw0KGgoAAAANSUhEUgAA...", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotBlank(message = "头像 Base64 编码不能为空")
     private String base64Image;
 }

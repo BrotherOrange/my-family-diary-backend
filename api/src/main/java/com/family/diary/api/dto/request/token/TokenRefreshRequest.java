@@ -13,12 +13,11 @@
  * limitations under the License.
  */
 
-package com.family.diary.api.dto.request.user;
+package com.family.diary.api.dto.request.token;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * 用户登录请求体
+ * Token刷新请求体
  *
  * @author Richard Zhang
  * @since 2025-08-21
@@ -37,15 +36,10 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Schema(description = "用户登录请求")
-public class UserLoginRequest {
+@Schema(description = "Token刷新请求")
+public class TokenRefreshRequest {
 
-    @Schema(description = "微信OpenId", example = "oXxx_xxxxxxxxxxxxx", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "微信Open ID不得为空")
-    String openId;
-
-    @Schema(description = "用户密码", example = "password123", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "密码不得为空")
-    @Size(min = 8, max = 30, message = "密码长度必须为8-30位之间")
-    String password;
+    @Schema(description = "Refresh Token", example = "eyJhbGciOiJIUzUxMiJ9...", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "Refresh Token不能为空")
+    private String refreshToken;
 }

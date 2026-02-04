@@ -1,2 +1,7 @@
 /common/src/main/resources/application-local.yml
 /qodana.yaml
+/.claude/
+/.idea/
+
+# Maven build output
+target/
