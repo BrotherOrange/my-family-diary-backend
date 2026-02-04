@@ -56,8 +56,17 @@ public class TraceIdFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-        // 使用 getServletPath() 获取不包含 context path 的路径
-        String path = request.getServletPath();
+        // getServletPath() 在某些代理场景下可能返回空字符串
+        // 使用 getRequestURI() 并去掉 context path 更可靠
+        String requestUri = request.getRequestURI();
+        String contextPath = request.getContextPath();
+
+        // 移除 context path 获取实际的 servlet path
+        String path = requestUri;
+        if (contextPath != null && !contextPath.isEmpty() && requestUri.startsWith(contextPath)) {
+            path = requestUri.substring(contextPath.length());
+        }
+
         return EXCLUDED_PATHS.stream().anyMatch(path::startsWith);
     }
 
