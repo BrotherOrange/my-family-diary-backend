@@ -17,7 +17,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          mvn clean package -DskipTests \
+          mvn -pl bootstrap -am clean package -DskipTests \
             --settings .github/maven/settings.xml \
             -DDB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
             -DDB_URL="${{ secrets.DB_URL }}" \
@@ -34,12 +34,12 @@ jobs:
             -DJWT_SECRET="${{ secrets.JWT_SECRET }}"
 
       - name: Check build output
-        run: ls -la api/target/
+        run: ls -la bootstrap/target/
 
       - name: Deploy JAR
         run: |
           echo "Copying JAR to deployment directory..."
-          cp api/target/api-0.0.1-SNAPSHOT.jar /var/lib/jenkins/workspace/my-family-diary-backend/
+          cp bootstrap/target/bootstrap-0.0.1-SNAPSHOT.jar /var/lib/jenkins/workspace/my-family-diary-backend/api-0.0.1-SNAPSHOT.jar
           echo "Deploy complete!"
 
       - name: Restart Application Service
