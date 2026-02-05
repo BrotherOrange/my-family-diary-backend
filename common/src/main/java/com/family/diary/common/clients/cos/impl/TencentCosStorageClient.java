@@ -13,20 +13,19 @@
  * limitations under the License.
  */
 
-package com.family.diary.common.clients.cos;
+package com.family.diary.common.clients.cos.impl;
 
+import com.family.diary.common.clients.cos.CosStorageClient;
 import com.family.diary.common.enums.errors.ExceptionErrorCode;
 import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.factory.tencentcloud.COSClientFactory;
+import com.family.diary.common.utils.common.RetryExecutor;
 import com.family.diary.common.utils.common.ImageUtils;
 import com.family.diary.common.utils.tencentcloud.COSUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.function.Supplier;
 
 /**
  * 腾讯云COS客户端实现
@@ -35,7 +34,6 @@ import java.util.function.Supplier;
  * @since 2026-02-04
  */
 @Component
-@Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TencentCosStorageClient implements CosStorageClient {
 
@@ -56,7 +54,7 @@ public class TencentCosStorageClient implements CosStorageClient {
 
     @Override
     public String uploadBase64Image(String base64Image, String objectKey) {
-        return withRetry("COS上传", () -> {
+        return RetryExecutor.execute("COS上传", maxAttempts, baseBackoffMs, () -> {
             var tempClient = cosClientFactory.createTemporaryClient();
             var url = imageUtils.uploadBase64ImageToCOS(tempClient, base64Image, objectKey);
             if (url == null || url.isBlank()) {
@@ -68,7 +66,7 @@ public class TencentCosStorageClient implements CosStorageClient {
 
     @Override
     public String generatePresignedUrl(String objectKey, long expirationInSeconds) {
-        return withRetry("COS生成预签名URL", () -> {
+        return RetryExecutor.execute("COS生成预签名URL", maxAttempts, baseBackoffMs, () -> {
             var permanentClient = cosClientFactory.createPermanentClient();
             var url = cosUtil.generatePresignedUrlWithOutHost(permanentClient, bucket, objectKey, expirationInSeconds);
             if (url == null || url.isBlank()) {
@@ -76,29 +74,5 @@ public class TencentCosStorageClient implements CosStorageClient {
             }
             return url;
         });
-    }
-
-    private <T> T withRetry(String action, Supplier<T> supplier) {
-        RuntimeException lastException = null;
-        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            try {
-                return supplier.get();
-            } catch (Exception e) {
-                lastException = e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
-                log.warn("{}失败，准备重试 {}/{}: {}", action, attempt, maxAttempts, e.getMessage());
-                if (attempt < maxAttempts) {
-                    sleepSilently(baseBackoffMs * attempt);
-                }
-            }
-        }
-        throw lastException != null ? lastException : new RuntimeException(action + "失败");
-    }
-
-    private void sleepSilently(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
     }
 }

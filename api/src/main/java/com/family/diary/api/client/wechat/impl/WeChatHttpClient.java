@@ -17,8 +17,8 @@ package com.family.diary.api.client.wechat.impl;
 
 import com.family.diary.api.client.wechat.WeChatClient;
 import com.family.diary.api.dto.response.wechat.WeChatSessionResponse;
+import com.family.diary.common.utils.common.RetryExecutor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -38,7 +38,6 @@ import java.util.Collections;
  * @since 2026-02-04
  */
 @Component
-@Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WeChatHttpClient implements WeChatClient {
 
@@ -61,36 +60,18 @@ public class WeChatHttpClient implements WeChatClient {
 
     @Override
     public WeChatSessionResponse code2Session(String code) {
-        RuntimeException lastException = null;
-        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            try {
-                var requestUrl = codeToSessionUrl + "?appid=" + appId +
-                        "&secret=" + appSecret +
-                        "&js_code=" + code +
-                        "&grant_type=authorization_code";
+        return RetryExecutor.execute("微信code2session", maxAttempts, baseBackoffMs, () -> {
+            var requestUrl = codeToSessionUrl + "?appid=" + appId +
+                    "&secret=" + appSecret +
+                    "&js_code=" + code +
+                    "&grant_type=authorization_code";
 
-                var url = URI.create(requestUrl);
-                var headers = new HttpHeaders();
-                headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-                var httpEntity = new HttpEntity<>(headers);
-                return restTemplate.exchange(url, HttpMethod.GET, httpEntity,
-                        WeChatSessionResponse.class).getBody();
-            } catch (Exception e) {
-                lastException = e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
-                log.warn("微信code2session失败，准备重试 {}/{}: {}", attempt, maxAttempts, e.getMessage());
-                if (attempt < maxAttempts) {
-                    sleepSilently(baseBackoffMs * attempt);
-                }
-            }
-        }
-        throw lastException != null ? lastException : new RuntimeException("WeChat code2session failed");
-    }
-
-    private void sleepSilently(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
+            var url = URI.create(requestUrl);
+            var headers = new HttpHeaders();
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            var httpEntity = new HttpEntity<>(headers);
+            return restTemplate.exchange(url, HttpMethod.GET, httpEntity,
+                    WeChatSessionResponse.class).getBody();
+        });
     }
 }
