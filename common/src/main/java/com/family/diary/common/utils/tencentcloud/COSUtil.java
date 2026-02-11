@@ -68,14 +68,11 @@ public class COSUtil {
             var url = cosClient.generatePresignedUrl(req, false);
             var finalUrl = url.toString()
                     .replaceAll(Matcher.quoteReplacement(defaultHost), Matcher.quoteReplacement(host));
-            log.info("Generated presigned URL: {}", finalUrl);
+            log.debug("Generated presigned URL: {}", finalUrl);
             return finalUrl;
         } catch (Exception e) {
             log.error("Generate presigned url error", e);
             return Strings.EMPTY;
-        } finally {
-            // 关闭客户端
-            cosClient.shutdown();
         }
     }
 }

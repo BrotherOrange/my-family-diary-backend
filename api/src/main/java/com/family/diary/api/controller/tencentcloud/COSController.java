@@ -19,21 +19,20 @@ import com.family.diary.api.dto.request.tencentcloud.cos.COSAvatarUploadRequest;
 import com.family.diary.api.mapper.tencentcloud.cos.COSAvatarUploadMapper;
 import com.family.diary.api.service.tencentcloud.COSService;
 import com.family.diary.common.utils.common.CommonResponse;
+import com.family.diary.domain.entity.user.UserEntity;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -56,14 +55,18 @@ public class COSController {
     /**
      * 上传头像
      *
-     * @param request 上传头像请求体
+     * @param currentUser 当前认证用户
+     * @param request     上传头像请求体
      * @return 头像临时链接
      */
     @Operation(summary = "上传头像", description = "上传用户头像到腾讯云COS，返回临时访问链接")
     @PostMapping("/avatar/upload")
-    public ResponseEntity<CommonResponse<String>> uploadAvatar(@RequestBody @Valid COSAvatarUploadRequest request) {
+    public ResponseEntity<CommonResponse<String>> uploadAvatar(
+            @AuthenticationPrincipal UserEntity currentUser,
+            @RequestBody @Valid COSAvatarUploadRequest request) {
         log.info("开始上传头像");
         var entity = cosAvatarUploadMapper.toCOSAvatarUploadEntity(request);
+        entity.setOpenId(currentUser.getOpenId());
         var tempAvatarUrl = cosService.uploadAvatarToCOS(entity);
         return CommonResponse.ok(tempAvatarUrl);
     }
@@ -71,16 +74,15 @@ public class COSController {
     /**
      * 获取头像临时链接
      *
-     * @param openId 用户Open ID
+     * @param currentUser 当前认证用户
      * @return 头像临时链接
      */
-    @Operation(summary = "获取头像链接", description = "根据用户OpenID获取头像的临时访问链接")
+    @Operation(summary = "获取头像链接", description = "获取当前用户头像的临时访问链接")
     @GetMapping("/avatar/url")
     public ResponseEntity<CommonResponse<String>> getAvatarUrl(
-            @Parameter(description = "用户OpenID", required = true, example = "oXxx_xxxxxxxxxxxxx")
-            @RequestParam @Valid @NotEmpty(message = "openid不能为空") String openId) {
+            @AuthenticationPrincipal UserEntity currentUser) {
         log.info("开始获取头像URL");
-        var tempAvatarUrl = cosService.getAvatarUrl(openId);
+        var tempAvatarUrl = cosService.getAvatarUrl(currentUser.getOpenId());
         return CommonResponse.ok(tempAvatarUrl);
     }
 }

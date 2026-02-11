@@ -18,7 +18,6 @@ package com.family.diary.domain.entity.user;
 import com.family.diary.common.enums.status.UserEmotionStatus;
 import com.family.diary.common.enums.status.UserFlagStatus;
 import com.family.diary.domain.entity.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,7 +39,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserEntity extends BaseEntity {
     /**
      * 微信账户OpenID

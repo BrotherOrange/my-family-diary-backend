@@ -22,6 +22,8 @@ import com.family.diary.common.utils.common.CommonResponse;
 import com.family.diary.api.service.token.TokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -84,7 +86,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 // 从过期的token中提取openId
                 openId = e.getClaims().getSubject();
             } catch (MalformedJwtException e) {
-                log.warn("JWT Token无效", e);
+                log.warn("JWT Token格式无效", e);
+            } catch (SignatureException e) {
+                log.warn("JWT Token签名验证失败", e);
+            } catch (UnsupportedJwtException e) {
+                log.warn("JWT Token类型不支持", e);
             }
         }
 

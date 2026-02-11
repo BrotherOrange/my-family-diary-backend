@@ -28,7 +28,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
 /**
  * API层User映射类
@@ -38,8 +37,6 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper(componentModel = "spring", uses = { CommonConvertMapper.class, UserConvertMapper.class })
 public interface UserApiMapper {
-    UserApiMapper INSTANCE = Mappers.getMapper(UserApiMapper.class);
-
     /**
      * UserRegisterRequest -> UserEntity
      *

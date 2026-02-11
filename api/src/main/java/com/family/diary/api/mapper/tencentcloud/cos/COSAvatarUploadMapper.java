@@ -18,7 +18,7 @@ package com.family.diary.api.mapper.tencentcloud.cos;
 import com.family.diary.api.dto.request.tencentcloud.cos.COSAvatarUploadRequest;
 import com.family.diary.domain.entity.tencentcloud.cos.COSAvatarUploadEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapping;
 
 /**
  * COS服务头像上传的映射接口类
@@ -28,13 +28,12 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper(componentModel = "spring")
 public interface COSAvatarUploadMapper {
-    COSAvatarUploadMapper INSTANCE = Mappers.getMapper(COSAvatarUploadMapper.class);
-
     /**
      * COSAvatarUploadRequest -> COSAvatarUploadEntity
      *
      * @param cosAvatarUploadRequest COSAvatarUploadRequest
      * @return COSAvatarUploadEntity
      */
+    @Mapping(target = "openId", ignore = true)
     COSAvatarUploadEntity toCOSAvatarUploadEntity(COSAvatarUploadRequest cosAvatarUploadRequest);
 }

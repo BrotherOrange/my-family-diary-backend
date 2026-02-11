@@ -15,7 +15,7 @@
 
 package com.family.diary.api.filters.common;
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import org.springframework.util.StringUtils;
 import com.family.diary.common.constants.response.ResponseMessageConstants;
 import com.family.diary.common.enums.errors.ResponseErrorCode;
 import com.family.diary.common.utils.common.CommonResponse;
@@ -76,7 +76,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
         final var traceId = request.getHeader(traceHeader);
 
         // 检查 traceId 是否存在且非空白
-        if (traceId == null || StringUtils.isBlank(traceId)) {
+        if (!StringUtils.hasText(traceId)) {
             log.warn("Missing or empty trace header '{}' in request from {}:{}",
                     traceHeader,
                     request.getRemoteAddr(),
@@ -96,7 +96,7 @@ public class TraceIdFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } finally {
-            MDC.clear();
+            MDC.remove("traceId");
         }
     }
 }

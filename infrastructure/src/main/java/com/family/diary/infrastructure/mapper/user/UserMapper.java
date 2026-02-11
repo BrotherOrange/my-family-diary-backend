@@ -21,7 +21,6 @@ import com.family.diary.domain.entity.user.UserEntity;
 import com.family.diary.infrastructure.po.user.UserPo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 /**
  * 用户持久化与实体映射接口类
@@ -31,7 +30,6 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper(componentModel = "spring", uses = { CommonConvertMapper.class, UserConvertMapper.class })
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     /**
      * UserEntity -> UserPo

@@ -6,7 +6,7 @@ server:
 
 spring:
   application:
-    name: person-website
+    name: my-family-diary
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL}

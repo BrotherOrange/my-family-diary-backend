@@ -33,7 +33,12 @@ public interface COSConstants {
     String AVATARS_DIR = "images/user/avatars";
 
     /**
-     * 头像缓存前缀
+     * 头像URL缓存前缀
      */
     String AVATARS_CACHE_KEY_PREFIX = "avatar:url";
+
+    /**
+     * 头像文件路径缓存前缀
+     */
+    String AVATARS_PATH_CACHE_KEY_PREFIX = "avatar:path";
 }

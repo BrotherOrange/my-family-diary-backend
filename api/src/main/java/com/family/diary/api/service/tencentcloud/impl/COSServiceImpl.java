@@ -60,8 +60,10 @@ public class COSServiceImpl implements COSService {
             log.error("上传头像到 COS 失败，文件存储路径：{}", filePath);
             throw new BaseException(ExceptionErrorCode.COMMON_ERROR, "上传头像到 COS 失败");
         }
+        saveAvatarPathCache(openid, filePath);
         saveAvatarCache(openid, imageUrl);
-        log.info("上传图片到 COS 成功，文件存储路径：{}，临时访问地址：{}", filePath, imageUrl);
+        log.info("上传图片到 COS 成功，文件存储路径：{}", filePath);
+        log.debug("临时访问地址：{}", imageUrl);
         return imageUrl;
     }
 
@@ -77,7 +79,7 @@ public class COSServiceImpl implements COSService {
         }
         // 缓存未命中，生成新链接并缓存
         log.info("Redis 缓存未命中，生成新的头像链接，openid:{}", openid);
-        var filePath = buildFilePathWithId(openid, COSConstants.AVATARS_DIR, ImageConstants.IMAGE_PNG_FORMAT);
+        var filePath = findAvatarFilePath(openid);
         var avatarUrl = cosStorageClient.generatePresignedUrl(filePath, ImageConstants.MAX_VALID_TIME);
         if (avatarUrl != null && !avatarUrl.isBlank()) {
             saveAvatarCache(openid, avatarUrl);
@@ -99,5 +101,24 @@ public class COSServiceImpl implements COSService {
 
     private String getAvatarCacheKey(String openid) {
         return String.format("%s:%s", COSConstants.AVATARS_CACHE_KEY_PREFIX, openid);
+    }
+
+    private String findAvatarFilePath(String openid) {
+        var cacheKey = getAvatarPathCacheKey(openid);
+        var cachedPath = (String) redisUtil.get(cacheKey);
+        if (cachedPath != null && !cachedPath.isEmpty()) {
+            return cachedPath;
+        }
+        log.warn("未找到用户头像文件路径缓存，openid: {}", openid);
+        return null;
+    }
+
+    private void saveAvatarPathCache(String openid, String filePath) {
+        var cacheKey = getAvatarPathCacheKey(openid);
+        redisUtil.set(cacheKey, filePath);
+    }
+
+    private String getAvatarPathCacheKey(String openid) {
+        return String.format("%s:%s", COSConstants.AVATARS_PATH_CACHE_KEY_PREFIX, openid);
     }
 }
