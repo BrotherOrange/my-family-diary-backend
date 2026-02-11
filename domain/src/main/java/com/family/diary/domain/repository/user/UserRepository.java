@@ -47,4 +47,13 @@ public interface UserRepository {
      * @return 用户实体
      */
     UserEntity findByOpenId(String openId);
+
+    /**
+     * 更新用户头像文件路径
+     *
+     * @param openId     微信用户OpenID
+     * @param avatarPath 头像文件路径
+     * @return 更新的记录数：1成功，0失败
+     */
+    int updateAvatarPath(String openId, String avatarPath);
 }

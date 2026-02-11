@@ -24,6 +24,7 @@ import com.family.diary.common.exceptions.BaseException;
 import com.family.diary.common.utils.common.ImageUtils;
 import com.family.diary.common.utils.redis.RedisUtil;
 import com.family.diary.domain.entity.tencentcloud.cos.COSAvatarUploadEntity;
+import com.family.diary.domain.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -48,6 +49,8 @@ public class COSServiceImpl implements COSService {
 
     private final ImageUtils imageUtils;
 
+    private final UserRepository userRepository;
+
     @Override
     public String uploadAvatarToCOS(COSAvatarUploadEntity entity) throws BaseException {
         var openid = entity.getOpenId();
@@ -60,7 +63,8 @@ public class COSServiceImpl implements COSService {
             log.error("上传头像到 COS 失败，文件存储路径：{}", filePath);
             throw new BaseException(ExceptionErrorCode.COMMON_ERROR, "上传头像到 COS 失败");
         }
-        saveAvatarPathCache(openid, filePath);
+        userRepository.updateAvatarPath(openid, filePath);
+        cacheAvatarPath(openid, filePath);
         saveAvatarCache(openid, imageUrl);
         log.info("上传图片到 COS 成功，文件存储路径：{}", filePath);
         log.debug("临时访问地址：{}", imageUrl);
@@ -109,13 +113,22 @@ public class COSServiceImpl implements COSService {
         if (cachedPath != null && !cachedPath.isEmpty()) {
             return cachedPath;
         }
-        log.warn("未找到用户头像文件路径缓存，使用默认PNG格式，openid: {}", openid);
+        log.info("Redis 路径缓存未命中，查询 MySQL，openid: {}", openid);
+        var user = userRepository.findByOpenId(openid);
+        if (user != null && user.getAvatarPath() != null && !user.getAvatarPath().isEmpty()) {
+            cacheAvatarPath(openid, user.getAvatarPath());
+            return user.getAvatarPath();
+        }
+        log.warn("MySQL 中未找到用户头像文件路径，使用默认PNG格式，openid: {}", openid);
         return buildFilePathWithId(openid, COSConstants.AVATARS_DIR, ImageConstants.IMAGE_PNG_FORMAT);
     }
 
-    private void saveAvatarPathCache(String openid, String filePath) {
+    private void cacheAvatarPath(String openid, String filePath) {
         var cacheKey = getAvatarPathCacheKey(openid);
-        redisUtil.set(cacheKey, filePath);
+        var success = redisUtil.setWithExpire(cacheKey, filePath, COSConstants.AVATARS_PATH_CACHE_TTL, TimeUnit.SECONDS);
+        if (!success) {
+            log.warn("Redis 缓存头像文件路径失败，openid: {}", openid);
+        }
     }
 
     private String getAvatarPathCacheKey(String openid) {

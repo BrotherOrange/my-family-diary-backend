@@ -79,4 +79,9 @@ public class UserPo extends BasePo {
      * 用户状态
      */
     private String flag;
+
+    /**
+     * 头像文件路径
+     */
+    private String avatarPath;
 }

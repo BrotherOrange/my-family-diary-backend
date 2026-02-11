@@ -41,4 +41,9 @@ public interface COSConstants {
      * 头像文件路径缓存前缀
      */
     String AVATARS_PATH_CACHE_KEY_PREFIX = "avatar:path";
+
+    /**
+     * 头像文件路径缓存过期时间，单位为秒（24小时）
+     */
+    Long AVATARS_PATH_CACHE_TTL = 24 * 60 * 60L;
 }

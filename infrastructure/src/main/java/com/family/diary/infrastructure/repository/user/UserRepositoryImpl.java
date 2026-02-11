@@ -16,6 +16,7 @@
 package com.family.diary.infrastructure.repository.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.family.diary.common.exceptions.ConflictException;
 import com.family.diary.domain.entity.user.UserEntity;
 import com.family.diary.domain.repository.user.UserRepository;
@@ -63,5 +64,13 @@ public class UserRepositoryImpl implements UserRepository {
             log.error("OpenId {} 查询到多个用户", openId);
             throw new ConflictException("OpenId重复!");
         }
+    }
+
+    @Override
+    public int updateAvatarPath(String openId, String avatarPath) {
+        var updateWrapper = new LambdaUpdateWrapper<UserPo>()
+                .eq(UserPo::getOpenId, openId)
+                .set(UserPo::getAvatarPath, avatarPath);
+        return userDAO.update(updateWrapper);
     }
 }
