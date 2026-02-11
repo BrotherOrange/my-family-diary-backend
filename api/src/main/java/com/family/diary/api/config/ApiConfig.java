@@ -15,7 +15,6 @@
 
 package com.family.diary.api.config;
 
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -25,6 +24,5 @@ import org.springframework.context.annotation.Configuration;
  * @since 2025-07-13
  */
 @Configuration
-@ComponentScan("com.family.diary")
 public class ApiConfig {
 }

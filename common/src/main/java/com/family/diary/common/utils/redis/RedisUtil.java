@@ -103,7 +103,7 @@ public class RedisUtil {
      * @return 如果键存在返回true，否则返回false
      */
     public boolean exists(String key) {
-        return redisTemplate.hasKey(key);
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
 
     /**
@@ -213,7 +213,7 @@ public class RedisUtil {
     public void releaseLock(String lockKey, String requestId) {
         var keys = List.of(lockKey);
         var result = redisTemplate.execute(releaseLockScript, keys, requestId);
-        if (result == 0L) {
+        if (result == null || result == 0L) {
             log.warn("Redis未能成功释放锁或锁不存在");
         }
     }
@@ -224,13 +224,12 @@ public class RedisUtil {
      * @param script Lua脚本内容
      * @param keys   键名列表
      * @param args   参数列表
-     * @param <T>    返回类型
      * @return 脚本执行结果
      */
-    public <T> T executeScript(String script, List<String> keys, Object... args) {
-        DefaultRedisScript<T> redisScript = new DefaultRedisScript<>();
+    public Object executeScript(String script, List<String> keys, Object... args) {
+        DefaultRedisScript<Object> redisScript = new DefaultRedisScript<>();
         redisScript.setScriptText(script);
-        redisScript.setResultType((Class<T>) Object.class);
+        redisScript.setResultType(Object.class);
         return redisTemplate.execute(redisScript, keys, args);
     }
 }

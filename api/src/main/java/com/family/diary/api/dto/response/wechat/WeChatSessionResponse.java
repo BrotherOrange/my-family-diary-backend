@@ -17,7 +17,6 @@ package com.family.diary.api.dto.response.wechat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nimbusds.jose.shaded.gson.annotations.SerializedName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,11 +37,11 @@ public class WeChatSessionResponse {
 
     @Schema(description = "会话密钥", example = "xxx...")
     @JsonProperty("session_key")
-    @SerializedName("session_key")
+
     private String sessionKey;
 
     @Schema(description = "用户唯一标识", example = "oXxx_xxxxxxxxxxxxx")
     @JsonProperty("openid")
-    @SerializedName("openid")
+
     private String openId;
 }

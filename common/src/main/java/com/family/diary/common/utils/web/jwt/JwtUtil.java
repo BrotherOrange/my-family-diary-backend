@@ -23,6 +23,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,13 @@ public class JwtUtil {
 
     @Value("${jwt.token-redis-prefix}")
     private String JWT_REDIS_KEY_PREFIX;
+
+    private Key signingKey;
+
+    @PostConstruct
+    private void init() {
+        this.signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    }
 
     // ==================== 公开API（门面方法） ====================
 
@@ -121,16 +129,6 @@ public class JwtUtil {
     }
 
     /**
-     * 提取Token类型
-     *
-     * @param token token
-     * @return Token类型
-     */
-    public String extractTokenType(String token) {
-        return extractClaim(token, claims -> claims.get(JWTConstants.CLAIM_TOKEN_TYPE, String.class));
-    }
-
-    /**
      * 提取特定声明
      *
      * @param token          token
@@ -178,8 +176,9 @@ public class JwtUtil {
      */
     private Boolean validateToken(String token, String openId, TokenType tokenType) {
         try {
-            final var extractedOpenId = extractOpenId(token);
-            final var extractedType = extractTokenType(token);
+            final var claims = extractAllClaims(token);
+            final var extractedOpenId = claims.getSubject();
+            final var extractedType = claims.get(JWTConstants.CLAIM_TOKEN_TYPE, String.class);
 
             // 验证Token类型
             if (!tokenType.getType().equals(extractedType)) {
@@ -192,7 +191,7 @@ public class JwtUtil {
             var isValidToken = storedToken != null
                     && storedToken.equals(token)
                     && extractedOpenId.equals(openId)
-                    && !isTokenExpired(token);
+                    && !claims.getExpiration().before(new Date());
 
             if (!isValidToken) {
                 log.warn("Open ID为{}的用户使用的{} Token无效或过期", openId, tokenType.getType());
@@ -235,31 +234,11 @@ public class JwtUtil {
     }
 
     /**
-     * 检查Token是否过期
-     *
-     * @param token token
-     * @return 是：过期 / 否：未过期
-     */
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    /**
-     * 提取Token过期时间
-     *
-     * @param token token
-     * @return Token过期时间
-     */
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    /**
-     * 获取签名密钥
+     * 获取签名密钥（使用缓存的实例）
      *
      * @return 签名密钥
      */
     private Key getSignInKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        return signingKey;
     }
 }

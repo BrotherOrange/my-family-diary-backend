@@ -39,4 +39,10 @@ public interface ResponseMessageConstants {
     // ==================== 请求相关 ====================
     String MISSING_TRACE_ID = "Missing or empty trace ID";
     String INVALID_REQUEST = "非法请求";
+    String METHOD_NOT_ALLOWED = "请求方法不允许";
+    String MESSAGE_NOT_READABLE = "请求体格式错误或缺失";
+
+    // ==================== 数据相关 ====================
+    String DUPLICATE_RESOURCE = "资源已存在，无法重复创建";
+    String INTERNAL_ERROR = "服务器内部错误，请稍后重试";
 }

@@ -70,7 +70,6 @@ public class SecurityConfig {
                         .requestMatchers("/v1/register").permitAll() // 注册放行
                         .requestMatchers("/v1/login").permitAll() // 登录放行
                         .requestMatchers("/v1/user/exists").permitAll() // 用户存在检查放行
-                        .requestMatchers("/v1/wechat/account/info").permitAll() // 微信登录放行
                         .requestMatchers("/v1/wechat/account/code2session").permitAll() // 微信静默登录放行
                         .requestMatchers("/v1/token/refresh").permitAll() // Token刷新放行
                         .anyRequest().authenticated() // 其他请求需要认证
@@ -102,7 +101,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(List.of("http://localhost:*", "https://www.jihao-family.com"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "x-trace-id"));
         configuration.setExposedHeaders(List.of("Authorization", "Link"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

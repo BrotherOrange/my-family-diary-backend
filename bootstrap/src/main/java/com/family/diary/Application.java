@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * 启动类
@@ -13,7 +12,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * @since 2026-02-04
  */
 @Slf4j
-@EnableAsync
 @SpringBootApplication
 @MapperScan("com.family.diary.infrastructure.dao")
 public class Application {

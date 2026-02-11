@@ -46,8 +46,7 @@ public abstract class BaseExceptionHandler {
      * @param ex 异常对象
      */
     protected void logError(Exception ex) {
-        // 你可以使用日志框架（如 SLF4J）记录异常
-        log.error("Exception occurred: {}", String.valueOf(ex));
+        log.error("Exception occurred: {}", ex.getMessage(), ex);
     }
 
     /**

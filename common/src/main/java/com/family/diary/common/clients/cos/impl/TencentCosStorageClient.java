@@ -56,11 +56,15 @@ public class TencentCosStorageClient implements CosStorageClient {
     public String uploadBase64Image(String base64Image, String objectKey) {
         return RetryExecutor.execute("COS上传", maxAttempts, baseBackoffMs, () -> {
             var tempClient = cosClientFactory.createTemporaryClient();
-            var url = imageUtils.uploadBase64ImageToCOS(tempClient, base64Image, objectKey);
-            if (url == null || url.isBlank()) {
-                throw new BaseException(ExceptionErrorCode.COMMON_ERROR, "上传图片到 COS 失败");
+            try {
+                var url = imageUtils.uploadBase64ImageToCOS(tempClient, base64Image, objectKey);
+                if (url == null || url.isBlank()) {
+                    throw new BaseException(ExceptionErrorCode.COMMON_ERROR, "上传图片到 COS 失败");
+                }
+                return url;
+            } finally {
+                tempClient.shutdown();
             }
-            return url;
         });
     }
 

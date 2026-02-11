@@ -15,6 +15,7 @@
 
 package com.family.diary.common.handlers.exception;
 
+import com.family.diary.common.constants.response.ResponseMessageConstants;
 import com.family.diary.common.enums.errors.ExceptionErrorCode;
 import com.family.diary.common.enums.errors.ResponseErrorCode;
 import com.family.diary.common.exceptions.BaseException;
@@ -27,6 +28,8 @@ import com.family.diary.common.utils.common.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -45,21 +48,31 @@ public class GlobalExceptionHandler extends BaseExceptionHandler {
         logError(ex);
         var responseError = mapBaseException(ex);
         String bizCode = ex.getErrorCode() != null ? ex.getErrorCode().getCode() : null;
-        return CommonResponse.fail(responseError, ex.getMessage(), null, bizCode);
+        return CommonResponse.fail(responseError, responseError.getMessage(), null, bizCode);
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<CommonResponse<Object>> handleDuplicateKey(DuplicateKeyException ex) {
         logError(ex);
-        return CommonResponse.fail(ResponseErrorCode.CONFLICT, "资源已存在，无法重复创建");
+        return CommonResponse.fail(ResponseErrorCode.CONFLICT, ResponseMessageConstants.DUPLICATE_RESOURCE);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<CommonResponse<Object>> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
+        logError(ex);
+        return CommonResponse.fail(ResponseErrorCode.METHOD_NOT_ALLOWED, ResponseMessageConstants.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<CommonResponse<Object>> handleMessageNotReadable(HttpMessageNotReadableException ex) {
+        logError(ex);
+        return CommonResponse.fail(ResponseErrorCode.BAD_REQUEST, ResponseMessageConstants.MESSAGE_NOT_READABLE);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CommonResponse<Object>> handleUnknownException(Exception ex) {
         logError(ex);
-        toUnknownException(ex);
-        return CommonResponse.fail(ResponseErrorCode.INTERNAL_SERVER_ERROR,
-                ResponseErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+        return CommonResponse.fail(ResponseErrorCode.INTERNAL_SERVER_ERROR, ResponseMessageConstants.INTERNAL_ERROR);
     }
 
     private ResponseErrorCode mapBaseException(BaseException ex) {

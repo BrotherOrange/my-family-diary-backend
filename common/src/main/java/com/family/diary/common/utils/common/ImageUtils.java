@@ -97,7 +97,7 @@ public class ImageUtils {
             }
         }
 
-        return Strings.EMPTY; // 如果上传失败，返回 null
+        return Strings.EMPTY; // 如果上传失败，返回空字符串
     }
 
     /**

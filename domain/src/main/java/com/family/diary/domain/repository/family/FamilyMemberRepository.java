@@ -13,30 +13,13 @@
  * limitations under the License.
  */
 
-package com.family.diary.domain.entity.tencentcloud.cos;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+package com.family.diary.domain.repository.family;
 
 /**
- * 上传头像到COS的值对象
+ * FamilyMemberRepository接口类
  *
  * @author Richard Zhang
- * @since 2025-07-26
+ * @since 2025-09-07
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class COSAvatarUploadEntity {
-    /**
-     * 用户的 OpenID
-     */
-    private String openId;
-
-    /**
-     * 用户的头像 Base64 编码字符串
-     * 注意：Base64 编码的字符串需要去掉前缀 "data:image/png;base64,"
-     */
-    private String base64Image;
+public interface FamilyMemberRepository {
 }

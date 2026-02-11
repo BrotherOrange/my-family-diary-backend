@@ -27,6 +27,7 @@ import com.qcloud.cos.utils.Jackson;
 import com.tencent.cloud.CosStsClient;
 import com.tencent.cloud.Policy;
 import com.tencent.cloud.Statement;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -56,17 +57,24 @@ public class COSClientFactory {
     @Value("${tencent-cloud.cos.bucket}")
     private String bucket;
 
-    /**
-     * 创建永久密钥的COSClient实例
-     * 适用于：生成预签名URL等需要长期有效的场景
-     *
-     * @return COSClient 新的客户端实例
-     */
-    public COSClient createPermanentClient() {
+    private volatile COSClient permanentClient;
+
+    @PostConstruct
+    private void init() {
         var cred = new BasicCOSCredentials(apiSecretId, apiSecretKey);
         var region = new Region(cosRegion);
         var clientConfig = new ClientConfig(region);
-        return new COSClient(cred, clientConfig);
+        this.permanentClient = new COSClient(cred, clientConfig);
+    }
+
+    /**
+     * 获取永久密钥的COSClient实例（单例复用）
+     * 适用于：生成预签名URL等需要长期有效的场景
+     *
+     * @return COSClient 永久客户端实例
+     */
+    public COSClient createPermanentClient() {
+        return permanentClient;
     }
 
     /**
@@ -102,7 +110,7 @@ public class COSClientFactory {
             var policy = new Policy();
             var statement = new Statement();
             statement.setEffect("allow");
-            statement.addActions(new String[]{"cos:*"});
+            statement.addActions(new String[]{"cos:PutObject", "cos:GetObject"});
             statement.addResources(new String[]{
                     String.format("qcs::cos:%s:uid/%s:%s/*", cosRegion, appId, bucket),
                     String.format("qcs::ci:%s:uid/%s:bucket/%s/*", cosRegion, appId, bucket)
