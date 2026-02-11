@@ -109,8 +109,8 @@ public class COSServiceImpl implements COSService {
         if (cachedPath != null && !cachedPath.isEmpty()) {
             return cachedPath;
         }
-        log.warn("未找到用户头像文件路径缓存，openid: {}", openid);
-        return null;
+        log.warn("未找到用户头像文件路径缓存，使用默认PNG格式，openid: {}", openid);
+        return buildFilePathWithId(openid, COSConstants.AVATARS_DIR, ImageConstants.IMAGE_PNG_FORMAT);
     }
 
     private void saveAvatarPathCache(String openid, String filePath) {
